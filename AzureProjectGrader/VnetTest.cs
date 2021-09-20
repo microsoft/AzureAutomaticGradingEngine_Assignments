@@ -52,9 +52,9 @@ namespace AzureProjectGrader
         public void Test01_Have2VnetsIn2Regions()
         {
             Assert.DoesNotThrow(() => { Console.WriteLine(vnet1.Name); });
-            Assert.AreEqual(vnet1.Location, "southeastasia");
+            Assert.AreEqual("southeastasia", vnet1.Location);
             Assert.DoesNotThrow(() => { Console.WriteLine(vnet2.Name); });
-            Assert.AreEqual(vnet2.Location, "eastasia");
+            Assert.AreEqual("eastasia", vnet2.Location);
         }
 
         [Test]
@@ -243,7 +243,7 @@ namespace AzureProjectGrader
             Assert.AreEqual("*", crossVnetInbound.SourcePortRange);
             Assert.AreEqual("Tcp", crossVnetInbound.Protocol);
             Assert.AreEqual("80", crossVnetInbound.DestinationPortRange);
-            Assert.AreEqual(100, crossVnetInbound.Priority);
+            Assert.AreEqual(201, crossVnetInbound.Priority);
             Assert.AreEqual(privateSubnet.AddressPrefix, crossVnetInbound.DestinationAddressPrefixes[0]);
         }
 
