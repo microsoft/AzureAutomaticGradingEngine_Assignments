@@ -23,17 +23,9 @@ namespace AzureProjectGrader
         {
             var config = new Config();
             client = new MonitorManagementClient(config.Credentials, new HttpClient(), true);
-            client.SubscriptionId = config.SubscriptionId;
-            var a = client.LogProfiles.List();
-            var b = client.Operations.List();
+            client.SubscriptionId = config.SubscriptionId;                    
         }
 
-        [Test]
-        public void Test01_AppServicePlanSettings()
-        {
-            //Assert.AreEqual("southeastasia", applicationInsight.Location);
-            //Assert.AreEqual("other", applicationInsight.ApplicationType);
-            //Assert.AreEqual(30, applicationInsight.RetentionInDays);
-        }
+  
     }
 }
