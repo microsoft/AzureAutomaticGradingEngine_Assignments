@@ -17,9 +17,17 @@ namespace AzureProjectGrader
 
         private static readonly HttpClient httpClient = new HttpClient();
 
+        public StorageAccountTest()
+        {
+            Setup();
+        }
+
         [SetUp]
         public void Setup()
         {
+            var config = new Config();
+            client = new StorageManagementClient(config.Credentials);
+            client.SubscriptionId = config.SubscriptionId;
             IPage<StorageAccount> storageAccounts = GetStorageAccounts();
             storageAccount = GetLogicStorageAccount(storageAccounts);        
             webStorageAccount = storageAccounts.FirstOrDefault(c => c.Tags.ContainsKey("usage") && c.Tags["usage"] == "StaticWeb");
@@ -32,12 +40,7 @@ namespace AzureProjectGrader
 
         public IPage<StorageAccount> GetStorageAccounts()
         {
-            var config = new Config();
-            client = new StorageManagementClient(config.Credentials);
-            client.SubscriptionId = config.SubscriptionId;
-           
-            var storageAccounts = client.StorageAccounts.ListByResourceGroup(Constants.ResourceGroupName);            
-            return storageAccounts;
+            return client.StorageAccounts.ListByResourceGroup(Constants.ResourceGroupName);  
         }
 
         [TearDown]

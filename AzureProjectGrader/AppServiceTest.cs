@@ -41,7 +41,7 @@ namespace AzureProjectGrader
         public void Test02_FunctionAppSettings()
         {
             Assert.AreEqual("southeastasia", functionApp.Region.Name);
-            IReadOnlyDictionary<string, IAppSetting> appSettings = functionApp.GetAppSettings();    
+            IReadOnlyDictionary<string, IAppSetting> appSettings = functionApp.GetAppSettings();
             Assert.AreEqual("~3", appSettings["FUNCTIONS_EXTENSION_VERSION"].Value.ToString());
             Assert.AreEqual("node", appSettings["FUNCTIONS_WORKER_RUNTIME"].Value.ToString());
             Assert.AreEqual("~14", appSettings["WEBSITE_NODE_DEFAULT_VERSION"].Value.ToString());
@@ -49,7 +49,14 @@ namespace AzureProjectGrader
             Assert.That(appSettings["WEBSITE_RUN_FROM_PACKAGE"].Value.ToString(), Does.EndWith("app.zip"));
             Assert.That(appSettings["StorageConnectionAppSetting"].Value.ToString(), Does.StartWith($"DefaultEndpointsProtocol=https;AccountName={storageAccount.Name};AccountKey="));
             Assert.That(appSettings["WEBSITE_CONTENTAZUREFILECONNECTIONSTRING"].Value.ToString(), Does.StartWith($"DefaultEndpointsProtocol=https;AccountName={storageAccount.Name};AccountKey="));
-            Assert.IsNotNull(appSettings["APPINSIGHTS_INSTRUMENTATIONKEY"].Value);
+        }
+
+        [Test]
+        public void Test03_FunctionAppSettingsInstrumentationKey()
+        {
+            var applicationInsightTest = new ApplicationInsightTest();
+            IReadOnlyDictionary<string, IAppSetting> appSettings = functionApp.GetAppSettings();
+            Assert.AreEqual(applicationInsightTest.GetApplicationInsights().InstrumentationKey, appSettings["APPINSIGHTS_INSTRUMENTATIONKEY"].Value);
         }
     }
 }
