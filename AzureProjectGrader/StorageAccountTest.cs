@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Management.Storage;
 using Microsoft.Azure.Management.Storage.Models;
 using NUnit.Framework;
 using System.Net.Http;
-using System.Net.Http.Headers;
+using Microsoft.Rest.Azure;
 
 namespace AzureProjectGrader
 {
@@ -22,13 +20,24 @@ namespace AzureProjectGrader
         [SetUp]
         public void Setup()
         {
+            IPage<StorageAccount> storageAccounts = GetStorageAccounts();
+            storageAccount = GetLogicStorageAccount(storageAccounts);        
+            webStorageAccount = storageAccounts.FirstOrDefault(c => c.Tags.ContainsKey("usage") && c.Tags["usage"] == "StaticWeb");
+        }
+
+        public StorageAccount GetLogicStorageAccount(IPage<StorageAccount> storageAccounts)
+        {
+            return storageAccounts.FirstOrDefault(c => c.Tags.ContainsKey("usage") && c.Tags["usage"] == "logic");
+        }
+
+        public IPage<StorageAccount> GetStorageAccounts()
+        {
             var config = new Config();
             client = new StorageManagementClient(config.Credentials);
             client.SubscriptionId = config.SubscriptionId;
-
-            var storageAccounts = client.StorageAccounts.ListByResourceGroup(Constants.ResourceGroupName);
-            storageAccount = storageAccounts.FirstOrDefault(c => c.Name.Contains("sa"));
-            webStorageAccount = storageAccounts.FirstOrDefault(c => c.Name.Contains("web"));
+           
+            var storageAccounts = client.StorageAccounts.ListByResourceGroup(Constants.ResourceGroupName);            
+            return storageAccounts;
         }
 
         [TearDown]
@@ -73,7 +82,28 @@ namespace AzureProjectGrader
             HttpResponseMessage response = await httpClient.GetAsync(webUrl + "/PageIsNotExist" + DateTime.Now.Ticks);
             var error = await response.Content.ReadAsStringAsync();
             Assert.AreEqual("This is error page.", error);
+        }
 
+        [Test]
+        public void Test03_StorageAccountCodeContainer()
+        {
+            var codeContainer = client.BlobContainers.Get(Constants.ResourceGroupName, storageAccount.Name, "code");
+            Assert.IsNotNull(codeContainer);
+            Assert.AreEqual("Blob", codeContainer.PublicAccess.Value.ToString());           
+        }
+
+        [Test]
+        public void Test04_StorageAccountMessageTable()
+        {
+            var messageTable = client.Table.Get(Constants.ResourceGroupName, storageAccount.Name, "message");
+            Assert.IsNotNull(messageTable);          
+        }
+
+        [Test]
+        public void Test05_StorageAccountJobQueue()
+        {
+            var jobQueue = client.Queue.Get(Constants.ResourceGroupName, storageAccount.Name, "job");
+            Assert.IsNotNull(jobQueue);
         }
 
     }
