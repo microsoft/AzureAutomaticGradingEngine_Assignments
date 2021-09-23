@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<AzureFunctionsVersion>v3</AzureFunctionsVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Azure.Data.Tables" Version="12.2.0" />
+		<PackageReference Include="Microsoft.Azure.Management.ApplicationInsights" Version="0.3.0-preview" />
+		<PackageReference Include="Microsoft.Azure.Management.AppService.Fluent" Version="1.38.0" />
+		<PackageReference Include="Microsoft.Azure.Management.Monitor" Version="0.25.4-preview" />
+		<PackageReference Include="Microsoft.Azure.Management.Network" Version="20.6.0" />
+		<PackageReference Include="Microsoft.Azure.Management.Storage" Version="23.0.0" />
+		<PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.13" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+		<PackageReference Include="NUnit" Version="3.13.2" />
+		<PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.18.0" />
+		<PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.13" />
+		<PackageReference Include="NUnitLite" Version="3.13.2" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="host.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="local.settings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
+</Project>
