@@ -32,7 +32,13 @@ namespace AzureProjectGrader
         }
 
         [Test]
-        public void Test01_AppServicePlanSettings()
+        public void Test01_AppServicePlanWithTag()
+        {
+            Assert.IsNotNull(applicationInsight, "Application Insights with tag {key:ApplicationInsights}.");
+        }
+
+        [Test]
+        public void Test02_AppServicePlanSettings()
         {
             Assert.AreEqual("southeastasia", applicationInsight.Location);
             Assert.AreEqual("other", applicationInsight.ApplicationType);

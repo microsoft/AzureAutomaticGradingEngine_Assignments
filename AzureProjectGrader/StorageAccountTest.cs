@@ -50,7 +50,19 @@ namespace AzureProjectGrader
         }
 
         [Test]
-        public void Test01_StorageAccountSettings()
+        public void Test01_StorageAccountsWithTag()
+        {
+            Assert.IsNotNull(storageAccount, "StorageAccount Plans with tag {usage:logic}.");
+        }
+
+        [Test]
+        public void Test02_StorageAccountsWithTag()
+        {
+            Assert.IsNotNull(webStorageAccount, "Static Web StorageAccount Plans with tag {usage:StaticWeb}.");
+        }
+
+        [Test]
+        public void Test03_StorageAccountSettings()
         {
             Assert.AreEqual("southeastasia", storageAccount.Location);
             Assert.AreEqual("Hot", storageAccount.AccessTier.Value.ToString());
@@ -60,7 +72,7 @@ namespace AzureProjectGrader
         }
 
         [Test]
-        public async Task Test02_WebStorageAccountSettings()
+        public async Task Test04_WebStorageAccountSettings()
         {
             Assert.AreEqual("eastasia", webStorageAccount.Location);
             Assert.AreEqual("Hot", webStorageAccount.AccessTier.Value.ToString());
@@ -88,7 +100,7 @@ namespace AzureProjectGrader
         }
 
         [Test]
-        public void Test03_StorageAccountCodeContainer()
+        public void Test05_StorageAccountCodeContainer()
         {
             var codeContainer = client.BlobContainers.Get(Constants.ResourceGroupName, storageAccount.Name, "code");
             Assert.IsNotNull(codeContainer);
@@ -96,14 +108,14 @@ namespace AzureProjectGrader
         }
 
         [Test]
-        public void Test04_StorageAccountMessageTable()
+        public void Test06_StorageAccountMessageTable()
         {
             var messageTable = client.Table.Get(Constants.ResourceGroupName, storageAccount.Name, "message");
             Assert.IsNotNull(messageTable);          
         }
 
         [Test]
-        public void Test05_StorageAccountJobQueue()
+        public void Test07_StorageAccountJobQueue()
         {
             var jobQueue = client.Queue.Get(Constants.ResourceGroupName, storageAccount.Name, "job");
             Assert.IsNotNull(jobQueue);

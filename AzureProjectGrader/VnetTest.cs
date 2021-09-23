@@ -51,9 +51,9 @@ namespace AzureProjectGrader
         [Test]
         public void Test01_Have2VnetsIn2Regions()
         {
-            Assert.DoesNotThrow(() => { Console.WriteLine(vnet1.Name); });
+            Assert.IsNotNull(vnet1);           
             Assert.AreEqual("southeastasia", vnet1.Location);
-            Assert.DoesNotThrow(() => { Console.WriteLine(vnet2.Name); });
+            Assert.IsNotNull(vnet2);           
             Assert.AreEqual("eastasia", vnet2.Location);
         }
 

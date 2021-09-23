@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Azure.Management.AppService.Fluent;
 using Microsoft.Azure.Management.Storage.Models;
+using Newtonsoft.Json;
+using System;
+using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace AzureProjectGrader
 {
@@ -14,22 +18,35 @@ namespace AzureProjectGrader
         private IFunctionApp functionApp;
         private StorageAccount storageAccount;
 
+        private static readonly HttpClient httpClient = new HttpClient();
+
         [SetUp]
         public void Setup()
         {
             var config = new Config();
             client = AppServiceManager.Configure().Authenticate(config.Credentials, config.SubscriptionId);
             appServicePlan = client.AppServicePlans.ListByResourceGroup(Constants.ResourceGroupName).FirstOrDefault(c => c.Tags.ContainsKey("key") && c.Tags["key"] == "AppServicePlan");
-            functionApp = client.FunctionApps.ListByResourceGroup(Constants.ResourceGroupName).FirstOrDefault(c => c.Tags.ContainsKey("key") && c.Tags["key"] == "FunctionAppApp");
+            functionApp = client.FunctionApps.ListByResourceGroup(Constants.ResourceGroupName).FirstOrDefault(c => c.Tags.ContainsKey("key") && c.Tags["key"] == "FunctionApp");
 
             var storageAccountTest = new StorageAccountTest();
             storageAccount = storageAccountTest.GetLogicStorageAccount(storageAccountTest.GetStorageAccounts());
             storageAccountTest.TearDown();
         }
 
+        [Test]
+        public void Test01_AppServicePlanWithTag()
+        {
+            Assert.IsNotNull(appServicePlan, "AppService Plans with tag {key:AppServicePlan}.");
+        }
 
         [Test]
-        public void Test01_AppServicePlanSettings()
+        public void Test02_FunctionAppsWithTag()
+        {
+            Assert.IsNotNull(functionApp, "Function App Plans with tag {key:FunctionApp}.");
+        }
+
+        [Test]
+        public void Test03_AppServicePlanSettings()
         {
             Assert.AreEqual("southeastasia", appServicePlan.Region.Name);
             Assert.AreEqual("Dynamic", appServicePlan.PricingTier.SkuDescription.Tier);
@@ -38,7 +55,7 @@ namespace AzureProjectGrader
         }
 
         [Test]
-        public void Test02_FunctionAppSettings()
+        public void Test04_FunctionAppSettings()
         {
             Assert.AreEqual("southeastasia", functionApp.Region.Name);
             IReadOnlyDictionary<string, IAppSetting> appSettings = functionApp.GetAppSettings();
@@ -52,11 +69,34 @@ namespace AzureProjectGrader
         }
 
         [Test]
-        public void Test03_FunctionAppSettingsInstrumentationKey()
+        public void Test05_FunctionAppSettingsInstrumentationKey()
         {
             var applicationInsightTest = new ApplicationInsightTest();
             IReadOnlyDictionary<string, IAppSetting> appSettings = functionApp.GetAppSettings();
             Assert.AreEqual(applicationInsightTest.GetApplicationInsights().InstrumentationKey, appSettings["APPINSIGHTS_INSTRUMENTATIONKEY"].Value);
         }
+
+        [Test]
+        public void Test04_AzureFunctionBinding()
+        {
+            var helloFunction = functionApp.ListFunctions()[0];
+            string functionjs = "{\"disabled\":false,\"bindings\":[{\"type\":\"httpTrigger\",\"name\":\"req\",\"direction\":\"in\",\"dataType\":\"string\",\"authLevel\":\"anonymous\",\"methods\":[\"get\"]},{\"type\":\"http\",\"direction\":\"out\",\"name\":\"res\"},{\"type\":\"queue\",\"name\":\"jobQueue\",\"queueName\":\"job\",\"direction\":\"out\",\"connection\":\"StorageConnectionAppSetting\"},{\"tableName\":\"message\",\"name\":\"messageTable\",\"type\":\"table\",\"direction\":\"out\",\"connection\":\"StorageConnectionAppSetting\"}]}";
+            var configJsonString = JsonConvert.SerializeObject(helloFunction.Config);
+            dynamic actural = JsonConvert.DeserializeObject(configJsonString);
+            dynamic expected = JsonConvert.DeserializeObject(functionjs);
+            Assert.AreEqual(expected, actural);
+        }
+
+        [Test]
+        public async Task Test05_AzureFunctionCall()
+        {
+            var helloFunction = functionApp.ListFunctions()[0];
+            var message = DateTime.Now.ToString();
+            var url = helloFunction.Inner.InvokeUrlTemplate + "?user=tester&message=" + message;
+            var helloResponse = await httpClient.GetStringAsync(url);
+            var expected = @"Hello, tester and I received your message: ${message}";
+            Assert.AreEqual(expected, helloResponse);
+        }
     }
+
 }
