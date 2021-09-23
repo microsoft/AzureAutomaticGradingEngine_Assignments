@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="Azure.Data.Tables" Version="12.2.0" />
 	  <PackageReference Include="Microsoft.Azure.Management.ApplicationInsights" Version="0.3.0-preview" />
 	  <PackageReference Include="Microsoft.Azure.Management.AppService.Fluent" Version="1.38.0" />
 	  <PackageReference Include="Microsoft.Azure.Management.Monitor" Version="0.25.4-preview" />

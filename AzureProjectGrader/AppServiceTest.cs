@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 using System.Net.Http;
+using Azure.Data.Tables;
 
 namespace AzureProjectGrader
 {
@@ -17,6 +18,8 @@ namespace AzureProjectGrader
         private IAppServicePlan appServicePlan;
         private IFunctionApp functionApp;
         private StorageAccount storageAccount;
+        private Table messageTable;
+        private StorageQueue jobQueue;
 
         private static readonly HttpClient httpClient = new HttpClient();
 
@@ -30,6 +33,9 @@ namespace AzureProjectGrader
 
             var storageAccountTest = new StorageAccountTest();
             storageAccount = storageAccountTest.GetLogicStorageAccount(storageAccountTest.GetStorageAccounts());
+            messageTable = storageAccountTest.GetMessageTable();
+            jobQueue = storageAccountTest.GetJobQueue();
+                 
             storageAccountTest.TearDown();
         }
 
@@ -88,14 +94,14 @@ namespace AzureProjectGrader
         }
 
         [Test]
-        public async Task Test05_AzureFunctionCall()
+        public async Task Test05_AzureFunctionCallWithHttpResponse()
         {
             var helloFunction = functionApp.ListFunctions()[0];
             var message = DateTime.Now.ToString();
             var url = helloFunction.Inner.InvokeUrlTemplate + "?user=tester&message=" + message;
             var helloResponse = await httpClient.GetStringAsync(url);
             var expected = @"Hello, tester and I received your message: ${message}";
-            Assert.AreEqual(expected, helloResponse);
+            Assert.AreEqual(expected, helloResponse);   
         }
     }
 

@@ -28,9 +28,11 @@ namespace AzureProjectGrader
             var config = new Config();
             client = new StorageManagementClient(config.Credentials);
             client.SubscriptionId = config.SubscriptionId;
+
+            
             IPage<StorageAccount> storageAccounts = GetStorageAccounts();
             storageAccount = GetLogicStorageAccount(storageAccounts);        
-            webStorageAccount = storageAccounts.FirstOrDefault(c => c.Tags.ContainsKey("usage") && c.Tags["usage"] == "StaticWeb");
+            webStorageAccount = storageAccounts.FirstOrDefault(c => c.Tags.ContainsKey("usage") && c.Tags["usage"] == "StaticWeb");    
         }
 
         public StorageAccount GetLogicStorageAccount(IPage<StorageAccount> storageAccounts)
@@ -41,6 +43,16 @@ namespace AzureProjectGrader
         public IPage<StorageAccount> GetStorageAccounts()
         {
             return client.StorageAccounts.ListByResourceGroup(Constants.ResourceGroupName);  
+        }
+
+        public Table GetMessageTable()
+        {
+            return client.Table.Get(Constants.ResourceGroupName, storageAccount.Name, "message");
+        }
+
+        public StorageQueue GetJobQueue()
+        {
+            return client.Queue.Get(Constants.ResourceGroupName, storageAccount.Name, "job");
         }
 
         [TearDown]
@@ -110,14 +122,14 @@ namespace AzureProjectGrader
         [Test]
         public void Test06_StorageAccountMessageTable()
         {
-            var messageTable = client.Table.Get(Constants.ResourceGroupName, storageAccount.Name, "message");
+            var messageTable = GetMessageTable();
             Assert.IsNotNull(messageTable);          
         }
 
         [Test]
         public void Test07_StorageAccountJobQueue()
         {
-            var jobQueue = client.Queue.Get(Constants.ResourceGroupName, storageAccount.Name, "job");
+            var jobQueue = GetJobQueue();
             Assert.IsNotNull(jobQueue);
         }
 
