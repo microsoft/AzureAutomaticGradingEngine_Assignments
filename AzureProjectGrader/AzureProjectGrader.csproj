@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\AzureProjectGraderFunctionApp\AzureProjectGrader\ApplicationInsightTest.cs" Link="ApplicationInsightTest.cs" />
+    <Compile Include="..\AzureProjectGraderFunctionApp\AzureProjectGrader\AppServiceTest.cs" Link="AppServiceTest.cs" />
+    <Compile Include="..\AzureProjectGraderFunctionApp\AzureProjectGrader\Config.cs" Link="Config.cs" />
+    <Compile Include="..\AzureProjectGraderFunctionApp\AzureProjectGrader\Constants.cs" Link="Constants.cs" />
+    <Compile Include="..\AzureProjectGraderFunctionApp\AzureProjectGrader\LogAnalyticsWorkspaceTest.cs" Link="LogAnalyticsWorkspaceTest.cs" />
+    <Compile Include="..\AzureProjectGraderFunctionApp\AzureProjectGrader\StorageAccountTest.cs" Link="StorageAccountTest.cs" />
+    <Compile Include="..\AzureProjectGraderFunctionApp\AzureProjectGrader\VnetTest.cs" Link="VnetTest.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <PackageReference Include="Azure.Data.Tables" Version="12.2.0" />
 	  <PackageReference Include="Microsoft.Azure.Management.ApplicationInsights" Version="0.3.0-preview" />
 	  <PackageReference Include="Microsoft.Azure.Management.AppService.Fluent" Version="1.38.0" />
