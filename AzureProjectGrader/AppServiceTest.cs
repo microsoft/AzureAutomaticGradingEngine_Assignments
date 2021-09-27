@@ -97,10 +97,11 @@ namespace AzureProjectGrader
         public async Task Test05_AzureFunctionCallWithHttpResponse()
         {
             var helloFunction = functionApp.ListFunctions()[0];
-            var message = DateTime.Now.ToString();
+            var message = DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss");
             var url = helloFunction.Inner.InvokeUrlTemplate + "?user=tester&message=" + message;
+            Console.WriteLine(url);
             var helloResponse = await httpClient.GetStringAsync(url);
-            var expected = @"Hello, tester and I received your message: ${message}";
+            var expected = $@"Hello, tester and I received your message: {message}";
             Assert.AreEqual(expected, helloResponse);   
         }
     }

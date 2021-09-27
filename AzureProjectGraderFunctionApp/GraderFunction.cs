@@ -8,11 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 using NUnitLite;
-using Newtonsoft.Json;
 using NUnit.Common;
-using System.Reflection;
-using AzureProjectGrader;
-using System.Linq;
 
 namespace AzureProjectGraderFunctionApp
 {
@@ -66,38 +62,26 @@ namespace AzureProjectGraderFunctionApp
             }
             else if (req.Method == "POST")
             {
-                string credentials = "";
-
                 log.LogInformation("POST Request");
-                if (!req.Headers.ContainsKey("LogicApps"))
-                {
-                    log.LogInformation("Form Submit");
-                    credentials = req.Form["credentials"];
-                }
-                else
-                {
-                    log.LogInformation("Form Logic App");
-                    using (var reader = new StreamReader(req.Body))
-                    {
-                        var body = reader.ReadToEnd();
-                        dynamic json = JsonConvert.DeserializeObject(body);
-                        credentials = JsonConvert.SerializeObject(json.credentials);
-                    }
-                }
 
-                var xml = await RunUnitTest(log, credentials);
-                return new OkObjectResult(xml);
-                //return new ContentResult { Content = xml, ContentType = "application/xml", StatusCode = 200 };
+                log.LogInformation("Form Submit");
+                string credentials = req.Form["credentials"];
+                if(credentials == null)
+                {                  
+                    return new ContentResult
+                    {
+                        Content = $"<result><value>No credentials</value></result>",
+                        ContentType = "application/xml",
+                        StatusCode = 422
+                    };
+                }
+                var xml = await RunUnitTest(log, credentials);        
+                return new ContentResult { Content = xml, ContentType = "application/xml", StatusCode = 200 };
             }
 
             return new OkObjectResult("ok");
         }
 
-        private static Assembly GetAssemblyByName(string name)
-        {
-            return AppDomain.CurrentDomain.GetAssemblies().
-                   SingleOrDefault(assembly => assembly.GetName().Name == name);
-        }
 
         private static async Task<string> RunUnitTest(ILogger log, string credentials)
         {
@@ -106,7 +90,7 @@ namespace AzureProjectGraderFunctionApp
 
             StringWriter strWriter = new StringWriter();
             Environment.SetEnvironmentVariable("AzureAuthFilePath", tempCredentialsFilePath);
-            var autoRun = new AutoRun();            
+            var autoRun = new AutoRun();
             var returnCode = autoRun.Execute(new string[]{
                            "/test:AzureProjectGrader",
                            "--work=" + Path.GetTempPath()
