@@ -55,7 +55,10 @@ namespace AzureProjectGraderFunctionApp
                 else
                 {
                     string credentials = req.Query["credentials"];
+                    string trace = req.Query["trace"];
+                    log.LogInformation("start:" + trace);
                     var xml = await RunUnitTest(log, credentials);
+                    log.LogInformation("end:" + trace);
                     return new ContentResult { Content = xml, ContentType = "application/xml", StatusCode = 200 };
                 }
 
@@ -66,8 +69,8 @@ namespace AzureProjectGraderFunctionApp
 
                 log.LogInformation("Form Submit");
                 string credentials = req.Form["credentials"];
-                if(credentials == null)
-                {                  
+                if (credentials == null)
+                {
                     return new ContentResult
                     {
                         Content = $"<result><value>No credentials</value></result>",
@@ -75,7 +78,7 @@ namespace AzureProjectGraderFunctionApp
                         StatusCode = 422
                     };
                 }
-                var xml = await RunUnitTest(log, credentials);        
+                var xml = await RunUnitTest(log, credentials);
                 return new ContentResult { Content = xml, ContentType = "application/xml", StatusCode = 200 };
             }
 
