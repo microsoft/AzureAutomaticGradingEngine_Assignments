@@ -55,10 +55,19 @@ namespace AzureProjectGraderFunctionApp
                 else
                 {
                     string credentials = req.Query["credentials"];
-                    string trace = req.Query["trace"];
-                    log.LogInformation("start:" + trace);
-                    var xml = await RunUnitTest(log, credentials);
-                    log.LogInformation("end:" + trace);
+
+                    string xml = "";
+                    if (req.Query.ContainsKey("trace"))
+                    {
+                        string trace = req.Query["trace"];
+                        log.LogInformation("start:" + trace);
+                        xml = await RunUnitTest(log, credentials, trace);
+                        log.LogInformation("end:" + trace);
+                    }
+                    else
+                    {
+                        xml = await RunUnitTest(log, credentials);
+                    }
                     return new ContentResult { Content = xml, ContentType = "application/xml", StatusCode = 200 };
                 }
 
@@ -86,13 +95,13 @@ namespace AzureProjectGraderFunctionApp
         }
 
 
-        private static async Task<string> RunUnitTest(ILogger log, string credentials)
+        private static async Task<string> RunUnitTest(ILogger log, string credentials, string folderSuffix = "")
         {
             var tempCredentialsFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
 
             await File.WriteAllLinesAsync(tempCredentialsFilePath, new string[] { credentials });
 
-            var tempDir = GetTemporaryDirectory();
+            var tempDir = GetTemporaryDirectory(folderSuffix);
 
             StringWriter strWriter = new StringWriter();
             Environment.SetEnvironmentVariable("AzureAuthFilePath", tempCredentialsFilePath);
@@ -101,14 +110,14 @@ namespace AzureProjectGraderFunctionApp
                 "/test:AzureProjectGrader",
                 "--work=" + tempDir
             }, new ExtendedTextWrapper(strWriter), Console.In);
-            log.LogInformation("AutoRun return code:" + returnCode);
+            log.LogInformation(folderSuffix + " AutoRun return code:" + returnCode + " , " + tempDir);
             var xml = await File.ReadAllTextAsync(Path.Combine(tempDir, "TestResult.xml"));
             return xml;
         }
 
-        private static string GetTemporaryDirectory()
+        private static string GetTemporaryDirectory(string folderSuffix)
         {
-            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName(), folderSuffix.GetHashCode().ToString());
             Directory.CreateDirectory(tempDirectory);
             return tempDirectory;
         }
