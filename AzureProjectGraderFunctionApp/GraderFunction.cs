@@ -86,18 +86,28 @@ namespace AzureProjectGraderFunctionApp
         private static async Task<string> RunUnitTest(ILogger log, string credentials)
         {
             var tempCredentialsFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
+
             await File.WriteAllLinesAsync(tempCredentialsFilePath, new string[] { credentials });
+
+            var tempDir = GetTemporaryDirectory();
 
             StringWriter strWriter = new StringWriter();
             Environment.SetEnvironmentVariable("AzureAuthFilePath", tempCredentialsFilePath);
             var autoRun = new AutoRun();
             var returnCode = autoRun.Execute(new string[]{
-                           "/test:AzureProjectGrader",
-                           "--work=" + Path.GetTempPath()
-                       }, new ExtendedTextWrapper(strWriter), Console.In);
+                "/test:AzureProjectGrader",
+                "--work=" + tempDir
+            }, new ExtendedTextWrapper(strWriter), Console.In);
             log.LogInformation("AutoRun return code:" + returnCode);
-            var xml = File.ReadAllText(Path.Combine(Path.GetTempPath(), "TestResult.xml"));
+            var xml = await File.ReadAllTextAsync(Path.Combine(tempDir, "TestResult.xml"));
             return xml;
+        }
+
+        private static string GetTemporaryDirectory()
+        {
+            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(tempDirectory);
+            return tempDirectory;
         }
     }
 }
