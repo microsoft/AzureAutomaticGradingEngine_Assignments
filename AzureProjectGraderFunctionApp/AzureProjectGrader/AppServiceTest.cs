@@ -8,7 +8,8 @@ using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 using System.Net.Http;
-using Azure.Data.Tables;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Table;
 
 namespace AzureProjectGrader
 {
@@ -65,13 +66,13 @@ namespace AzureProjectGrader
         {
             Assert.AreEqual("southeastasia", functionApp.Region.Name);
             IReadOnlyDictionary<string, IAppSetting> appSettings = functionApp.GetAppSettings();
-            Assert.AreEqual("~3", appSettings["FUNCTIONS_EXTENSION_VERSION"].Value.ToString());
-            Assert.AreEqual("node", appSettings["FUNCTIONS_WORKER_RUNTIME"].Value.ToString());
-            Assert.AreEqual("~14", appSettings["WEBSITE_NODE_DEFAULT_VERSION"].Value.ToString());
-            Assert.That(appSettings["WEBSITE_RUN_FROM_PACKAGE"].Value.ToString(), Does.StartWith($"https://{storageAccount.Name}.blob.core.windows.net/code/"));
-            Assert.That(appSettings["WEBSITE_RUN_FROM_PACKAGE"].Value.ToString(), Does.EndWith("app.zip"));
-            Assert.That(appSettings["StorageConnectionAppSetting"].Value.ToString(), Does.StartWith($"DefaultEndpointsProtocol=https;AccountName={storageAccount.Name};AccountKey="));
-            Assert.That(appSettings["WEBSITE_CONTENTAZUREFILECONNECTIONSTRING"].Value.ToString(), Does.StartWith($"DefaultEndpointsProtocol=https;AccountName={storageAccount.Name};AccountKey="));
+            Assert.AreEqual("~3", appSettings["FUNCTIONS_EXTENSION_VERSION"].Value);
+            Assert.AreEqual("node", appSettings["FUNCTIONS_WORKER_RUNTIME"].Value);
+            Assert.AreEqual("~14", appSettings["WEBSITE_NODE_DEFAULT_VERSION"].Value);
+            StringAssert.StartsWith($"https://{storageAccount.Name}.blob.core.windows.net/code/", appSettings["WEBSITE_RUN_FROM_PACKAGE"].Value);
+            StringAssert.EndsWith("app.zip", appSettings["WEBSITE_RUN_FROM_PACKAGE"].Value);
+            StringAssert.StartsWith($"DefaultEndpointsProtocol=https;AccountName={storageAccount.Name};AccountKey=", appSettings["StorageConnectionAppSetting"].Value);
+            StringAssert.StartsWith($"DefaultEndpointsProtocol=https;AccountName={storageAccount.Name};AccountKey=", appSettings["WEBSITE_CONTENTAZUREFILECONNECTIONSTRING"].Value);
         }
 
         [Test]
@@ -99,10 +100,54 @@ namespace AzureProjectGrader
             var helloFunction = functionApp.ListFunctions()[0];
             var message = DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss");
             var url = helloFunction.Inner.InvokeUrlTemplate + "?user=tester&message=" + message;
-            Console.WriteLine(url);
             var helloResponse = await httpClient.GetStringAsync(url);
             var expected = $@"Hello, tester and I received your message: {message}";
             Assert.AreEqual(expected, helloResponse);
+        }
+
+        [Test]
+        public async Task Test06_AzureFunctionCallSaveDataToAzureTable()
+        {
+            var helloFunction = functionApp.ListFunctions()[0];
+            var message = DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss");
+            var url = helloFunction.Inner.InvokeUrlTemplate + "?user=tester&message=" + message;
+            await httpClient.GetStringAsync(url);
+
+            var appSettings = functionApp.GetAppSettings();
+            var connectionString = appSettings["StorageConnectionAppSetting"].Value;
+
+            var storageAccount = CloudStorageAccount.Parse(connectionString);
+            var cloudTableClient = storageAccount.CreateCloudTableClient();
+            var messageTable = cloudTableClient.GetTableReference("message");
+
+            //messageTable:[{ PartitionKey: user, RowKey: message, time: time}]
+            var result = await messageTable.ExecuteAsync(TableOperation.Retrieve("tester", message));
+            Assert.IsNotNull(result.Result);
+        }
+
+        [Test]
+        public async Task Test07_AzureFunctionCallPutMessasgeToQueue()
+        {
+            var helloFunction = functionApp.ListFunctions()[0];
+
+            var appSettings = functionApp.GetAppSettings();
+            var connectionString = appSettings["StorageConnectionAppSetting"].Value;
+
+            var storageAccount = CloudStorageAccount.Parse(connectionString);
+            var cloudQueueClient = storageAccount.CreateCloudQueueClient();
+            var queue = cloudQueueClient.GetQueueReference("job");
+            await queue.ClearAsync();
+
+            var message = DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss");
+            var url = helloFunction.Inner.InvokeUrlTemplate + "?user=tester&message=" + message;
+            await httpClient.GetStringAsync(url);
+
+            var messageAsync = queue.GetMessageAsync();
+
+            Assert.IsNotNull(messageAsync.Result);
+            var resultAsString = messageAsync.Result.AsString;
+
+            StringAssert.Contains($"\"message\": \"{message}\"", resultAsString);
         }
     }
 

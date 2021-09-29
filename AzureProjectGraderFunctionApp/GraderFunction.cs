@@ -108,7 +108,10 @@ namespace AzureProjectGraderFunctionApp
             var autoRun = new AutoRun();
             var returnCode = autoRun.Execute(new string[]{
                 "/test:AzureProjectGrader",
-                "--work=" + tempDir
+                "--work=" + tempDir,
+                "--output=" + tempDir,
+                "--err=" + tempDir,
+
             }, new ExtendedTextWrapper(strWriter), Console.In);
             log.LogInformation(folderSuffix + " AutoRun return code:" + returnCode + " , " + tempDir);
             var xml = await File.ReadAllTextAsync(Path.Combine(tempDir, "TestResult.xml"));
