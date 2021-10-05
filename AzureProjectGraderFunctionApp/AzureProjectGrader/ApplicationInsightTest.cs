@@ -6,6 +6,7 @@ using System.Net.Http;
 
 namespace AzureProjectGrader
 {
+    [Parallelizable(scope: ParallelScope.Children)]
     class ApplicationInsightTest
     {
         private ApplicationInsightsManagementClient client;

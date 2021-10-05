@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace AzureProjectGrader
 {
+    [Parallelizable(scope: ParallelScope.Children)]
     class LogAnalyticsWorkspaceTest
     {
         private MonitorManagementClient client;
