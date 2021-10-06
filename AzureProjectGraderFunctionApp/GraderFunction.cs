@@ -95,32 +95,31 @@ namespace AzureProjectGraderFunctionApp
         }
 
 
-        private static async Task<string> RunUnitTest(ILogger log, string credentials, string folderSuffix = "")
+        private static async Task<string> RunUnitTest(ILogger log, string credentials, string trace = "NoTrace")
         {
-            var tempCredentialsFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
+            var tempCredentialsFilePath = Path.Combine(Path.GetTempPath(), Math.Abs(trace.GetHashCode()).ToString() + ".json");
 
             await File.WriteAllLinesAsync(tempCredentialsFilePath, new string[] { credentials });
 
-            var tempDir = GetTemporaryDirectory(folderSuffix);
+            var tempDir = GetTemporaryDirectory(trace);
 
             StringWriter strWriter = new StringWriter();
-            Environment.SetEnvironmentVariable("AzureAuthFilePath", tempCredentialsFilePath);
             var autoRun = new AutoRun();
             var returnCode = autoRun.Execute(new string[]{
                 "/test:AzureProjectGrader",
                 "--work=" + tempDir,
                 "--output=" + tempDir,
                 "--err=" + tempDir,
-
+                "--params:AzureCredentialsPath=" + tempCredentialsFilePath + ";trace=" + trace
             }, new ExtendedTextWrapper(strWriter), Console.In);
-            log.LogInformation(folderSuffix + " AutoRun return code:" + returnCode + " , " + tempDir);
+            log.LogInformation(" AutoRun return code:" + returnCode + " , " + tempDir + " trace: " + trace);
             var xml = await File.ReadAllTextAsync(Path.Combine(tempDir, "TestResult.xml"));
             return xml;
         }
 
-        private static string GetTemporaryDirectory(string folderSuffix)
+        private static string GetTemporaryDirectory(string trace)
         {
-            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName(), folderSuffix.GetHashCode().ToString());
+            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName(), Math.Abs(trace.GetHashCode()).ToString());
             Directory.CreateDirectory(tempDirectory);
             return tempDirectory;
         }
