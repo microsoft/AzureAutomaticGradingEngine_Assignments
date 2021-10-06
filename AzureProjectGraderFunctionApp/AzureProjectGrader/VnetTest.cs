@@ -198,7 +198,8 @@ namespace AzureProjectGrader
             Assert.AreEqual("*", allowHttpInbound.SourceAddressPrefix);
             Assert.AreEqual("TCP", allowHttpInbound.Protocol.ToUpper());
             Assert.AreEqual(201, allowHttpInbound.Priority);
-            Assert.AreEqual(publicSubnet.AddressPrefix, allowHttpInbound.DestinationAddressPrefixes[0]);
+            Assert.IsTrue(publicSubnet.AddressPrefix == allowHttpInbound.DestinationAddressPrefix || publicSubnet.AddressPrefix == allowHttpInbound.DestinationAddressPrefixes[0]);
+
 
             var allowAllTcpOutbound = networkSecurityGroup.SecurityRules.FirstOrDefault(c => c.DestinationPortRange == "*");
             Assert.AreEqual("Allow", allowAllTcpOutbound.Access);
@@ -226,8 +227,8 @@ namespace AzureProjectGrader
             Assert.AreEqual("*", allowHttpInbound.SourceAddressPrefix);
             Assert.AreEqual("TCP", allowHttpInbound.Protocol.ToUpper());
             Assert.AreEqual(201, allowHttpInbound.Priority);
-            Assert.AreEqual(publicSubnet.AddressPrefix, allowHttpInbound.DestinationAddressPrefixes[0]);
-
+            Assert.IsTrue(publicSubnet.AddressPrefix == allowHttpInbound.DestinationAddressPrefix || publicSubnet.AddressPrefix == allowHttpInbound.DestinationAddressPrefixes[0]);
+        
             var allowAllTcpOutbound = networkSecurityGroup.SecurityRules.FirstOrDefault(c => c.DestinationPortRange == "*");
             Assert.AreEqual("Allow", allowAllTcpOutbound.Access);
             Assert.AreEqual("Outbound", allowAllTcpOutbound.Direction);
@@ -263,7 +264,7 @@ namespace AzureProjectGrader
             Assert.AreEqual("TCP", crossVnetInbound.Protocol.ToUpper());
             Assert.AreEqual("80", crossVnetInbound.DestinationPortRange);
             Assert.AreEqual(201, crossVnetInbound.Priority);
-            Assert.AreEqual(privateSubnet.AddressPrefix, crossVnetInbound.DestinationAddressPrefixes[0]);
+            Assert.IsTrue(privateSubnet.AddressPrefix == crossVnetInbound.DestinationAddressPrefix || privateSubnet.AddressPrefix == crossVnetInbound.DestinationAddressPrefixes[0]);
         }
 
         [Test]
@@ -291,7 +292,7 @@ namespace AzureProjectGrader
             Assert.AreEqual("TCP", crossVnetInbound.Protocol.ToUpper());
             Assert.AreEqual("80", crossVnetInbound.DestinationPortRange);
             Assert.AreEqual(201, crossVnetInbound.Priority);
-            Assert.AreEqual(privateSubnet.AddressPrefix, crossVnetInbound.DestinationAddressPrefixes[0]);
+            Assert.IsTrue(privateSubnet.AddressPrefix == crossVnetInbound.DestinationAddressPrefix || privateSubnet.AddressPrefix == crossVnetInbound.DestinationAddressPrefixes[0]);
         }
     }
 }
