@@ -12,6 +12,10 @@ The project is being validated through usage on the course [Higher Diploma in Cl
 [![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fwongcyrus%2FAzureProjectGrader%2Fmaster%2Fazuredeploy.json)
 
 
+## Package UnitTest into exe
+Go to the \AzureProjectGrader\AzureProjectGrader path and run.
+dotnet publish -r win-x64 -c Release
+
 ## Generate the Prebuilt package
 
 Get the latest zip package
