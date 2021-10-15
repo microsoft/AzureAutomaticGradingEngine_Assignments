@@ -2,6 +2,17 @@
 
 This repository contains sample classroom assignments for classroom activity for grading students submissions of Azure Services by the [Azure Automatic Grading Solution](http://github.com/microsoft/azureautomaticgradingengine)
 
+1. Create 2 Virtual Networks in 2 regions.
+2. Create 2 Subnets in each Virtual Network.
+3. Create Route Tables & Network Security Groups.
+4. Create Virtual Network Peering for 2 Virtual Networks.
+5. Create 2 Storage Accounts - one for Azure Function and another for a static website.
+  1. Azure Function Storage Account contains 1 Storage Container, 1 Storage Queue, and 1 StorageTable.
+  2. Static website Storage Account contains index page and error page.
+6. Create 1 Application Insights with Log Analytics Workspace.
+7. Create 1 Azure Function App with 1 Azure Function.
+
+
 # Azure Project Grader for Automatic Grading Engine 
 
 For course testing Microsoft Azure, it is hard to assess or grade Azure project manually. This project makes use of the technique of unit test to grade student's Azure project settings automatically.
