@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -61,8 +62,9 @@ namespace AzureProjectGraderFunctionApp
                     if (req.Query.ContainsKey("trace"))
                     {
                         string trace = req.Query["trace"];
+                        string email = ExtractEmail(trace);
                         log.LogInformation("start:" + trace);
-                        xml = await RunUnitTestProcess(context, log, credentials, trace);
+                        xml = await RunUnitTestProcess(context, log, credentials, email);
                         log.LogInformation("end:" + trace);
                     }
                     else
@@ -186,6 +188,24 @@ namespace AzureProjectGraderFunctionApp
             string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName(), Math.Abs(trace.GetHashCode()).ToString());
             Directory.CreateDirectory(tempDirectory);
             return tempDirectory;
+        }
+        public static string ExtractEmail(string content)
+        {
+            const string matchEmailPattern =
+                @"(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
+                + @"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\."
+                + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+                + @"([a-zA-Z]+[\w-]+\.)+[a-zA-Z]{2,4})";
+
+            Regex rx = new Regex(
+                matchEmailPattern,
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+            // Find matches.
+            MatchCollection matches = rx.Matches(content);
+
+            return matches[0].Value;
+
         }
     }
 }

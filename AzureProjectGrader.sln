@@ -10,7 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F9C88F8C-267B-4C73-A0B1-B1E9AABD7362}"
 	ProjectSection(SolutionItems) = preProject
 		azuredeploy.json = azuredeploy.json
-		AzureProjectGraderFunctionApp\AzureProjectGraderFunctionApp.zip = AzureProjectGraderFunctionApp\AzureProjectGraderFunctionApp.zip
+		Prebuilt\AzureProjectGraderFunctionApp.zip = Prebuilt\AzureProjectGraderFunctionApp.zip
 		README.md = README.md
 	EndProjectSection
 EndProject

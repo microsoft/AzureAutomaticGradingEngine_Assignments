@@ -54,7 +54,7 @@
             },
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "https://github.com/wongcyrus/AzureProjectGrader/raw/master/AzureProjectGraderFunctionApp.zip"
+              "value": "https://github.com/microsoft/AzureAutomaticGradingEngine_Assignments/raw/main/Prebuilt/AzureProjectGraderFunctionApp.zip"
             }
           ]
         },
