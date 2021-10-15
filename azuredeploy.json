@@ -1,0 +1,92 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "uniqueName": {
+      "type": "string",
+      "metadata": {
+        "description": "Specifies the unique name of the Azure Storage account and Azure function Apps."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Specifies the location in which the Azure Storage resources should be deployed."
+      }
+    }
+  },
+  "resources": [
+    {
+      "apiVersion": "2018-11-01",
+      "name": "[parameters('uniqueName')]",
+      "type": "Microsoft.Web/sites",
+      "kind": "functionapp",
+      "location": "[parameters('location')]",
+      "tags": {},
+      "dependsOn": [
+        "[concat('microsoft.insights/components/', parameters('uniqueName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', parameters('uniqueName'))]"
+      ],
+      "properties": {
+        "name": "[parameters('uniqueName')]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "dotnet"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(concat('microsoft.insights/components/',parameters('uniqueName')), '2015-05-01').InstrumentationKey]"
+            },
+            {
+              "name": "APPINSIGHTS_CONNECTIONSTRING",
+              "value": "reference(concat('microsoft.insights/components/',parameters('uniqueName')), '2015-05-01').ConnectionString]"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('uniqueName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('uniqueName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+            },
+            {
+              "name": "WEBSITE_RUN_FROM_PACKAGE",
+              "value": "https://github.com/microsoft/AzureAutomaticGradingEngine_Assignments/raw/main/Prebuilt/AzureProjectGraderFunctionApp.zip"
+            }
+          ]
+        },
+        "computeMode": "Dynamic",
+        "sku": "Dynamic"
+      }
+    },
+    {
+      "apiVersion": "2015-05-01",
+      "name": "[parameters('uniqueName')]",
+      "type": "microsoft.insights/components",
+      "location": "[parameters('location')]",
+      "tags": {},
+      "properties": {
+        "ApplicationId": "[parameters('uniqueName')]",
+        "Request_Source": "IbizaWebAppExtensionCreate"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2019-06-01",
+      "name": "[parameters('uniqueName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot",
+        "supportsHttpsTrafficOnly": true
+      }
+    }
+  ]
+}
