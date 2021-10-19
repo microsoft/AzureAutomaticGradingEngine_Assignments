@@ -28,9 +28,8 @@ namespace AzureProjectGraderFunctionApp
             {
                 if (!req.Query.ContainsKey("credentials"))
                 {
-                    string html = @"
+                    const string html = @"
 <!DOCTYPE html>
-
 <html lang='en' xmlns='http://www.w3.org/1999/xhtml'>
 <head>
     <meta charset='utf-8' />
@@ -43,6 +42,9 @@ namespace AzureProjectGraderFunctionApp
         <br/>
         <button type='submit'>Run Test</button>
     </form>
+    <footer>
+        <p>Developed by <a href='https://www.vtc.edu.hk/admission/en/programme/it114115-higher-diploma-in-cloud-and-data-centre-administration/'> Higher Diploma in Cloud and Data Centre Administration Team.</a></p>
+    </footer>
 </body>
 </html>";
 
@@ -62,7 +64,7 @@ namespace AzureProjectGraderFunctionApp
                     if (req.Query.ContainsKey("trace"))
                     {
                         string trace = req.Query["trace"];
-                        string email = ExtractEmail(trace);
+                        var email = ExtractEmail(trace);
                         log.LogInformation("start:" + trace);
                         xml = await RunUnitTestProcess(context, log, credentials, email);
                         log.LogInformation("end:" + trace);
@@ -108,8 +110,8 @@ namespace AzureProjectGraderFunctionApp
 
             try
             {
-                using Process process = new Process();
-                ProcessStartInfo info = new ProcessStartInfo
+                using var process = new Process();
+                var info = new ProcessStartInfo
                 {
                     WorkingDirectory = workingDirectoryInfo,
                     FileName = exeLocation,
@@ -156,7 +158,7 @@ namespace AzureProjectGraderFunctionApp
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
 
-                    var timeout = 5 * 60 * 1000;
+                    const int timeout = 5 * 60 * 1000;
                     if (process.WaitForExit(timeout) &&
                         outputWaitHandle.WaitOne(timeout) &&
                         errorWaitHandle.WaitOne(timeout))
@@ -185,7 +187,7 @@ namespace AzureProjectGraderFunctionApp
 
         private static string GetTemporaryDirectory(string trace)
         {
-            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName(), Math.Abs(trace.GetHashCode()).ToString());
+            var tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName(), Math.Abs(trace.GetHashCode()).ToString());
             Directory.CreateDirectory(tempDirectory);
             return tempDirectory;
         }
@@ -197,12 +199,12 @@ namespace AzureProjectGraderFunctionApp
                 + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
                 + @"([a-zA-Z]+[\w-]+\.)+[a-zA-Z]{2,4})";
 
-            Regex rx = new Regex(
+            var rx = new Regex(
                 matchEmailPattern,
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             // Find matches.
-            MatchCollection matches = rx.Matches(content);
+            var matches = rx.Matches(content);
 
             return matches[0].Value;
 
