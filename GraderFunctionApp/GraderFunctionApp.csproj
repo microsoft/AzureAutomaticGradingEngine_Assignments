@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<AzureFunctionsVersion>v4</AzureFunctionsVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.0.1" />
+
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="AzureProjectTest.exe">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="host.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="local.settings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
+	<PropertyGroup>
+		<PreBuildEvent Condition=" '$(OS)' != 'Unix'">
+			cd $(SolutionDir)AzureProjectTest\
+			dotnet publish -p:PublishProfile=FolderProfile
+			xcopy bin\Release\net6.0\publish\win-x64\AzureProjectTest.exe $(SolutionDir)GraderFunctionApp\
+		</PreBuildEvent>
+	</PropertyGroup>
+</Project>
