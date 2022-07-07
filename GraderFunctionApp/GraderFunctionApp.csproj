@@ -19,11 +19,7 @@
 			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
 		</None>
 	</ItemGroup>
-	<PropertyGroup>
-		<PreBuildEvent Condition=" '$(OS)' != 'Unix'">
-			cd $(SolutionDir)AzureProjectTest\
-			dotnet publish -p:PublishProfile=FolderProfile
-			xcopy bin\Release\net6.0\publish\win-x64\AzureProjectTest.exe $(SolutionDir)GraderFunctionApp\
-		</PreBuildEvent>
-	</PropertyGroup>
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	  <Exec Command="cd ..\AzureProjectTest\&#xD;&#xA;dotnet publish -p:PublishProfile=FolderProfile&#xD;&#xA;xcopy bin\Release\net6.0\publish\win-x64\AzureProjectTest.exe ..\GraderFunctionApp\ /K /D /H /Y" />
+	</Target>
 </Project>

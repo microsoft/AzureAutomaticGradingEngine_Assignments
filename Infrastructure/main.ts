@@ -2,8 +2,9 @@ import { Construct } from "constructs";
 import { App, TerraformOutput, TerraformStack } from "cdktf";
 import { AzurermProvider, ResourceGroup } from "cdktf-azure-providers/.gen/providers/azurerm";
 
-import { AzureFunctionLinuxConstruct, PublishMode } from "azure-common-construct/patterns/AzureFunctionLinuxConstruct";
+import { AzureFunctionWindowsConstruct } from "azure-common-construct/patterns/AzureFunctionWindowsConstruct";
 import path = require("path");
+import { PublishMode } from "azure-common-construct/patterns/PublisherConstruct";
 
 class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -24,7 +25,7 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
     const appSettings = {
     }
 
-    const azureFunctionConstruct = new AzureFunctionLinuxConstruct(this, "AzureFunctionConstruct", {
+    const azureFunctionConstruct = new AzureFunctionWindowsConstruct(this, "AzureFunctionConstruct", {
       functionAppName: process.env.FUNCTION_APP_NAME!,
       environment,
       prefix,
