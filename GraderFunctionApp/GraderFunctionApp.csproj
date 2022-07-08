@@ -5,12 +5,11 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.0.1" />
-
 	</ItemGroup>
 	<ItemGroup>
-		<None Update="AzureProjectTest.exe">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
+	  <ProjectReference Include="..\AzureProjectTest\AzureProjectTest.csproj" />
+	</ItemGroup>	
+	<ItemGroup>
 		<None Update="host.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
@@ -18,8 +17,6 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
 		</None>
-	</ItemGroup>
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-	  <Exec Command="cd ..\AzureProjectTest\&#xD;&#xA;dotnet publish -p:PublishProfile=FolderProfile&#xD;&#xA;xcopy bin\Release\net6.0\publish\win-x64\AzureProjectTest.exe ..\GraderFunctionApp\ /K /D /H /Y" />
-	</Target>
+	</ItemGroup>	
+
 </Project>

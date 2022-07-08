@@ -24,6 +24,7 @@ namespace AzureProjectTest
             Console.WriteLine("trace:" + trace);
             Console.WriteLine("where:" + where);
 
+
             StringWriter strWriter = new StringWriter();
             var autoRun = new AutoRun();
 
@@ -38,18 +39,15 @@ namespace AzureProjectTest
             {
                 runTestParameters.Insert(1, "--where=" + where);
             }
+            Console.WriteLine(runTestParameters.ToArray());
             var returnCode = autoRun.Execute(runTestParameters.ToArray(), new ExtendedTextWrapper(strWriter), Console.In);
 
-            var xml = File.ReadAllText(Path.Combine(tempDir, "TestResult.xml"));
-            Console.WriteLine(returnCode);
-            Console.WriteLine(xml);
-            return 0;
-        }
-        private static string GetTemporaryDirectory(string trace)
-        {
-            string tempDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName(), Math.Abs(trace.GetHashCode()).ToString());
-            Directory.CreateDirectory(tempDirectory);
-            return tempDirectory;
-        }
+            Console.WriteLine(strWriter.ToString());
+
+            //var xml = File.ReadAllText(Path.Combine(tempDir, "TestResult.xml"));
+            //Console.WriteLine(returnCode);
+            //Console.WriteLine(xml);
+            return returnCode;
+        }       
     }
 }
