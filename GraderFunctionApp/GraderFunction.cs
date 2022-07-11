@@ -11,6 +11,8 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using ExecutionContext = Microsoft.Azure.WebJobs.ExecutionContext;
+using System.Collections.Generic;
+using System.Xml;
 
 namespace GraderFunctionApp
 {
@@ -83,6 +85,7 @@ namespace GraderFunctionApp
             else if (req.Method == "POST")
             {
                 log.LogInformation("POST Request");
+                string needXml = req.Query["xml"];
                 string credentials = req.Form["credentials"];
                 string filter = req.Form["filter"];
                 if (credentials == null)
@@ -95,7 +98,11 @@ namespace GraderFunctionApp
                     };
                 }
                 var xml = await RunUnitTestProcess(context, log, credentials, "Anonymous", filter);
-
+                if (string.IsNullOrEmpty(needXml))
+                {                    
+                    var result = ParseNUnitTestResult(xml);
+                    return new JsonResult(result);
+                }
                 return new ContentResult { Content = xml, ContentType = "application/xml", StatusCode = 200 };
             }
 
@@ -180,7 +187,8 @@ namespace GraderFunctionApp
                     if (!string.IsNullOrEmpty(errorLog)) return null;
 
                     var xml = await File.ReadAllTextAsync(Path.Combine(tempDir, "TestResult.xml"));
-                    Directory.Delete(tempDir, true);
+                    Directory.Delete(tempDir, true);                   
+
                     return xml;
                 }
                 else
@@ -220,5 +228,24 @@ namespace GraderFunctionApp
             return matches[0].Value;
 
         }
+
+        public static Dictionary<string, int> ParseNUnitTestResult(string rawXml)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(rawXml);
+            return ParseNUnitTestResult(xmlDoc);
+        }
+
+        private static Dictionary<string, int> ParseNUnitTestResult(XmlDocument xmlDoc)
+        {
+            var testCases = xmlDoc.SelectNodes("/test-run/test-suite/test-suite/test-suite/test-case");
+            var result = new Dictionary<string, int>();
+            foreach (XmlNode node in testCases)
+            {
+                result.Add(node.Attributes?["fullname"].Value, node.Attributes?["result"].Value == "Passed" ? 1 : 0);
+            }
+
+            return result;
+        }       
     }
 }
