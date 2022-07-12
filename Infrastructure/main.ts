@@ -1,9 +1,10 @@
 import { Construct } from "constructs";
-import { App, Fn, TerraformOutput, TerraformStack } from "cdktf";
+import { App, TerraformOutput, TerraformStack } from "cdktf";
 import { AzurermProvider, ResourceGroup } from "cdktf-azure-providers/.gen/providers/azurerm";
 import { Resource } from "cdktf-azure-providers/.gen/providers/null"
 
 import { AzureFunctionWindowsConstruct } from "azure-common-construct/patterns/AzureFunctionWindowsConstruct";
+import { AzureFunctionFileSharePublisherConstruct } from "azure-common-construct/patterns/AzureFunctionFileSharePublisherConstruct";
 import path = require("path");
 import { PublishMode } from "azure-common-construct/patterns/PublisherConstruct";
 
@@ -55,20 +56,15 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
       },
     ]);
 
-    const uploadTestProjectResource = new Resource(this, "UploadTestResource",
-      {
-        triggers: { build_hash: "${timestamp()}" },
-        dependsOn: [buildTestProjectResource]
-      })
-    const script = path.join(__dirname, "UploadFolderToFileShare.ps1");
     const testOutputFolder = path.join(__dirname, "..", "/AzureProjectTest/bin/Release/net6.0/publish/win-x64/");
-    uploadTestProjectResource.addOverride("provisioner", [
-      {
-        "local-exec": {
-          command: `powershell -ExecutionPolicy ByPass -File ${script} -connectionString \"${Fn.nonsensitive(azureFunctionConstruct.storageAccount.primaryConnectionString)} -folder ${testOutputFolder}`
-        }
-      },
-    ]);
+    const azureFunctionFileSharePublisherConstruct= new AzureFunctionFileSharePublisherConstruct(this,"AzureFunctionFileSharePublisherConstruct",{
+      functionApp:azureFunctionConstruct.functionApp,
+      functionFolder: "Tests",
+      localFolder: testOutputFolder,
+      storageAccount: azureFunctionConstruct.storageAccount
+    });
+    azureFunctionFileSharePublisherConstruct.node.addDependency(buildTestProjectResource)
+       
 
     new TerraformOutput(this, "FunctionAppHostname", {
       value: azureFunctionConstruct.functionApp.name
