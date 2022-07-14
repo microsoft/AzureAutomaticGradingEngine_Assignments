@@ -1,8 +1,8 @@
-﻿using Microsoft.Azure.Management.Storage;
+﻿using AzureProjectTest.Helper;
+using Microsoft.Azure.Management.Storage;
 using Microsoft.Azure.Management.Storage.Models;
-using NUnit.Framework;
 using Microsoft.Rest.Azure;
-using AzureProjectTest.Helper;
+using NUnit.Framework;
 
 namespace AzureProjectTest
 {
@@ -26,10 +26,10 @@ namespace AzureProjectTest
             client = new StorageManagementClient(config.Credentials);
             client.SubscriptionId = config.SubscriptionId;
 
-            
+
             IPage<StorageAccount> storageAccounts = GetStorageAccounts();
-            storageAccount = GetLogicStorageAccount(storageAccounts);        
-            webStorageAccount = storageAccounts.FirstOrDefault(c => c.Tags.ContainsKey("usage") && c.Tags["usage"] == "StaticWeb");    
+            storageAccount = GetLogicStorageAccount(storageAccounts);
+            webStorageAccount = storageAccounts.FirstOrDefault(c => c.Tags.ContainsKey("usage") && c.Tags["usage"] == "StaticWeb");
         }
 
         public StorageAccount GetLogicStorageAccount(IPage<StorageAccount> storageAccounts)
@@ -39,7 +39,7 @@ namespace AzureProjectTest
 
         public IPage<StorageAccount> GetStorageAccounts()
         {
-            return client.StorageAccounts.ListByResourceGroup(Constants.ResourceGroupName);  
+            return client.StorageAccounts.ListByResourceGroup(Constants.ResourceGroupName);
         }
 
         public Table GetMessageTable()
@@ -113,14 +113,14 @@ namespace AzureProjectTest
         {
             var codeContainer = client.BlobContainers.Get(Constants.ResourceGroupName, storageAccount.Name, "code");
             Assert.IsNotNull(codeContainer);
-            Assert.AreEqual("Blob", codeContainer.PublicAccess.Value.ToString());           
+            Assert.AreEqual("Blob", codeContainer.PublicAccess.Value.ToString());
         }
 
         [Test]
         public void Test06_StorageAccountMessageTable()
         {
             var messageTable = GetMessageTable();
-            Assert.IsNotNull(messageTable);          
+            Assert.IsNotNull(messageTable);
         }
 
         [Test]

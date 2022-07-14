@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using NUnit.Common;
+﻿using NUnit.Common;
 using NUnitLite;
 
 namespace AzureProjectTest
@@ -14,7 +10,7 @@ namespace AzureProjectTest
             //var trace = "trace";
             //var tempDir = @"C:\Users\developer\Documents\test";
             //var tempCredentialsFilePath = @"C:\Users\developer\Documents\CloudLabTest.json";
-            //var where = "test==AzureProjectTest.AppServiceTest.Test01_AppServicePlanWithTag";
+            //var where = "test==AzureProjectTest.ResourceGroupTest";
 
             var tempCredentialsFilePath = args[0];
             var tempDir = args[1];
@@ -28,7 +24,7 @@ namespace AzureProjectTest
             StringWriter strWriter = new StringWriter();
             var autoRun = new AutoRun();
 
-            var runTestParameters = new List<string>() { 
+            var runTestParameters = new List<string>() {
                 "/test:AzureProjectTest",
                 "--work=" + tempDir,
                 "--output=" + tempDir,
@@ -48,6 +44,6 @@ namespace AzureProjectTest
             //Console.WriteLine(returnCode);
             //Console.WriteLine(xml);
             return returnCode;
-        }       
+        }
     }
 }

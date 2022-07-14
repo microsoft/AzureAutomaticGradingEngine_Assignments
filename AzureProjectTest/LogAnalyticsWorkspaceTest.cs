@@ -1,6 +1,6 @@
-﻿using Microsoft.Azure.Management.Monitor;
+﻿using AzureProjectTest.Helper;
+using Microsoft.Azure.Management.Monitor;
 using NUnit.Framework;
-using AzureProjectTest.Helper;
 
 namespace AzureProjectTest
 {
@@ -19,9 +19,9 @@ namespace AzureProjectTest
         {
             var config = new Config();
             client = new MonitorManagementClient(config.Credentials, new HttpClient(), true);
-            client.SubscriptionId = config.SubscriptionId;                    
+            client.SubscriptionId = config.SubscriptionId;
         }
 
-  
+
     }
 }

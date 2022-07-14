@@ -1,11 +1,11 @@
 ﻿
-using NUnit.Framework;
 using AzureProjectTest.Helper;
 using Microsoft.Azure.Management.AppService.Fluent;
 using Microsoft.Azure.Management.Storage.Models;
-using Newtonsoft.Json;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
+using NUnit.Framework;
 
 namespace AzureProjectTest
 {

@@ -1,9 +1,7 @@
-using System;
+using AzureProjectTest.Helper;
 using Microsoft.Azure.Management.Network;
 using Microsoft.Azure.Management.Network.Models;
 using NUnit.Framework;
-using System.Linq;
-using AzureProjectTest.Helper;
 
 namespace AzureProjectTest
 {

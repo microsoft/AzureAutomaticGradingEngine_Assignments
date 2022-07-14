@@ -40,6 +40,7 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
       vsProjectPath: path.join(__dirname, "..", "GraderFunctionApp/"),
       publishMode: PublishMode.AfterCodeChange
     })
+    azureFunctionConstruct.functionApp.siteConfig.cors.allowedOrigins=["*"];
 
     const buildTestProjectResource = new Resource(this, "BuildFunctionAppResource",
       {

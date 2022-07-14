@@ -7,6 +7,8 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Azure.Identity" Version="1.6.0" />
+		<PackageReference Include="Azure.ResourceManager" Version="1.2.0" />
 		<PackageReference Include="Microsoft.Azure.Management.ApplicationInsights" Version="0.3.0-preview" />
 		<PackageReference Include="Microsoft.Azure.Management.AppService.Fluent" Version="1.38.1" />
 		<PackageReference Include="Microsoft.Azure.Management.Fluent" Version="1.38.1" />
