@@ -8,6 +8,9 @@ import { AzureFunctionFileSharePublisherConstruct } from "azure-common-construct
 import path = require("path");
 import { PublishMode } from "azure-common-construct/patterns/PublisherConstruct";
 
+import * as dotenv from 'dotenv';
+dotenv.config({ path: __dirname + '/.env' });
+
 class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
   constructor(scope: Construct, name: string) {
     super(scope, name);
