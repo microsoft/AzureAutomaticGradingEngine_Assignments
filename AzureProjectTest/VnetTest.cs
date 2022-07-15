@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace AzureProjectTest
 {
+    [GameClass(1)]
     [Parallelizable(ParallelScope.Children)]
     public class VnetTests
     {

@@ -6,6 +6,7 @@ using NUnit.Framework;
 
 namespace AzureProjectTest
 {
+    [GameClass(2)]
     class StorageAccountTest
     {
         private StorageManagementClient client;
@@ -58,18 +59,21 @@ namespace AzureProjectTest
             client.Dispose();
         }
 
+        [GameTask("Can you help create a Storage account in resource group 'projProd' and add tag name 'usage' and value 'logic'?", 2, 10)]
         [Test]
         public void Test01_StorageAccountsWithTag()
         {
             Assert.IsNotNull(storageAccount, "StorageAccount Plans with tag {usage:logic}.");
         }
 
+        [GameTask("Can you help create a Storage account in resource group 'projProd' and add tag name 'usage' and value 'StaticWeb'?", 2, 10)]
         [Test]
         public void Test02_StorageAccountsWithTag()
         {
             Assert.IsNotNull(webStorageAccount, "Static Web StorageAccount Plans with tag {usage:StaticWeb}.");
         }
 
+        [GameTask("Can you help change your Storage account tagged 'usage' as 'logic' to southeastasia, AccessTier to Hot, StorageV2, Standard_LRS and allow public access?", 2, 20)]
         [Test]
         public void Test03_StorageAccountSettings()
         {
@@ -79,6 +83,9 @@ namespace AzureProjectTest
             Assert.AreEqual("Standard_LRS", storageAccount.Sku.Name);
             Assert.IsTrue(storageAccount.AllowBlobPublicAccess);
         }
+
+        [GameTask("Can you help change your Storage account tagged 'usage' as 'StaticWeb' to eastasia, AccessTier to Hot, StorageV2, Standard_LRS and allow public access?" +
+            "I need the index page of text 'This is index page.' and the error page of text 'This is error page.'.", 2, 30)]
 
         [Test]
         public async Task Test04_WebStorageAccountSettings()

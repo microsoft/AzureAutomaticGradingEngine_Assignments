@@ -33,7 +33,7 @@ namespace AzureProjectTest
             };
             if (!string.IsNullOrEmpty(where))
             {
-                runTestParameters.Insert(1, "--where=" + where);
+                runTestParameters.Insert(1, "--where= \"" + where + "\"");
             }
             Console.WriteLine(runTestParameters.ToArray());
             var returnCode = autoRun.Execute(runTestParameters.ToArray(), new ExtendedTextWrapper(strWriter), Console.In);

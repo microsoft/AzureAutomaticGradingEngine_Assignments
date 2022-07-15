@@ -6,6 +6,7 @@ using NUnit.Framework;
 
 namespace AzureProjectTest
 {
+    [GameClass(1)]
     class ResourceGroupTest
     {
         private ArmClient armClient;
@@ -25,12 +26,14 @@ namespace AzureProjectTest
             rg = subscription.GetResourceGroups().Get(Constants.ResourceGroupName).Value.Data;
         }
 
+        [GameTask("Can you help create a resource group named 'projProd' in Hong Kong?", 2, 10, 1)]
         [Test]
         public async Task Test01_ResourceGroupExist()
         {
             Assert.IsNotNull(rg);
         }
 
+        [GameTask(1)]
         [Test]
         public async Task Test02_ResourceGroupLocation()
         {
