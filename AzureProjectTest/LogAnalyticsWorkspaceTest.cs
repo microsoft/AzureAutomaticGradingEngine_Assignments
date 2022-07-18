@@ -2,26 +2,23 @@
 using Microsoft.Azure.Management.Monitor;
 using NUnit.Framework;
 
-namespace AzureProjectTest
+namespace AzureProjectTest;
+
+[Parallelizable(ParallelScope.Children)]
+internal class LogAnalyticsWorkspaceTest
 {
-    [Parallelizable(scope: ParallelScope.Children)]
-    class LogAnalyticsWorkspaceTest
+    private MonitorManagementClient client;
+
+    public LogAnalyticsWorkspaceTest()
     {
-        private MonitorManagementClient client;
+        Setup();
+    }
 
-        public LogAnalyticsWorkspaceTest()
-        {
-            Setup();
-        }
-
-        [SetUp]
-        public void Setup()
-        {
-            var config = new Config();
-            client = new MonitorManagementClient(config.Credentials, new HttpClient(), true);
-            client.SubscriptionId = config.SubscriptionId;
-        }
-
-
+    [SetUp]
+    public void Setup()
+    {
+        var config = new Config();
+        client = new MonitorManagementClient(config.Credentials, new HttpClient(), true);
+        client.SubscriptionId = config.SubscriptionId;
     }
 }

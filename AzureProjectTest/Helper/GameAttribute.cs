@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AzureProjectTest.Helper
+﻿namespace AzureProjectTest.Helper
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class GameTaskAttribute : Attribute
@@ -32,7 +26,7 @@ namespace AzureProjectTest.Helper
         public int Reward { get; }
         public int GroupNumber { get; }
 
-        public override string ToString() => Instruction + "=>" + TimeLimit + ","+Reward + "," +GroupNumber;
+        public override string ToString() => Instruction + "=>" + TimeLimit + "," + Reward + "," + GroupNumber;
     }
 
     [AttributeUsage(AttributeTargets.Class)]

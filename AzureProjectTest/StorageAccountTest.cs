@@ -73,7 +73,7 @@ namespace AzureProjectTest
             Assert.IsNotNull(webStorageAccount, "Static Web StorageAccount Plans with tag {usage:StaticWeb}.");
         }
 
-        [GameTask("Can you help change your Storage account tagged 'usage' as 'logic' to southeastasia, AccessTier to Hot, StorageV2, Standard_LRS and allow public access?", 2, 20)]
+        [GameTask("Can you help change your Storage account tagged 'usage' with 'logic' to southeastasia, AccessTier to Hot, StorageV2, Standard_LRS and allow public access?", 2, 20)]
         [Test]
         public void Test03_StorageAccountSettings()
         {
@@ -84,7 +84,7 @@ namespace AzureProjectTest
             Assert.IsTrue(storageAccount.AllowBlobPublicAccess);
         }
 
-        [GameTask("Can you help change your Storage account tagged 'usage' as 'StaticWeb' to eastasia, AccessTier to Hot, StorageV2, Standard_LRS and allow public access?" +
+        [GameTask("Can you help change your Storage account tagged 'usage' with 'StaticWeb' to eastasia, AccessTier to Hot, StorageV2, Standard_LRS and allow public access?" +
             "I need the index page of text 'This is index page.' and the error page of text 'This is error page.'.", 2, 30)]
 
         [Test]
@@ -115,6 +115,7 @@ namespace AzureProjectTest
             Assert.AreEqual("This is error page.", error);
         }
 
+        [GameTask("I need a Blog container named 'code' in Storage account tagged 'usage' with 'logic'. Can you help?", 2, 10)]
         [Test]
         public void Test05_StorageAccountCodeContainer()
         {
@@ -123,12 +124,16 @@ namespace AzureProjectTest
             Assert.AreEqual("Blob", codeContainer.PublicAccess.Value.ToString());
         }
 
+        [GameTask("I need a Azure table named 'message' in Storage account tagged 'usage' with 'logic'. Can you help?", 2, 10)]
+
         [Test]
         public void Test06_StorageAccountMessageTable()
         {
             var messageTable = GetMessageTable();
             Assert.IsNotNull(messageTable);
         }
+
+        [GameTask("I need a Azure Storage Queue named 'job' in Storage account tagged 'usage' with 'logic'. Can you help?", 2, 10)]
 
         [Test]
         public void Test07_StorageAccountJobQueue()
