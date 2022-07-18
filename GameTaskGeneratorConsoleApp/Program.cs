@@ -1,8 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using AzureProjectTest.Helper;
 using System.Reflection;
-
-using GameTaskGeneratorConsoleApp;
+using GraderFunctionApp;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -20,10 +19,11 @@ foreach (var testClass in GetTypesWithHelpAttribute(assembly))
     var tasks = testClass.GetMethods().Where(m => m.GetCustomAttribute<GameTaskAttribute>() != null)
         .Select(c => new { c.Name, GameTask = c.GetCustomAttribute<GameTaskAttribute>()! });
 
-    var independTests = tasks.Where(c => c.GameTask.GroupNumber == -1)
+    var independentTests = tasks.Where(c => c.GameTask.GroupNumber == -1)
         .Select(c => new GameTaskData()
         {
-            Name = c.Name,
+            Name = testClass.FullName + "." + c.Name,
+            Tests= new [] { testClass.FullName + "." + c.Name},
             GameClassOrder = gameClass.Order,
             Instruction = c.GameTask.Instruction,
             Filter = "test=" + testClass.FullName + "." + c.Name,
@@ -37,22 +37,26 @@ foreach (var testClass in GetTypesWithHelpAttribute(assembly))
         .Select(c =>
             new GameTaskData()
             {
-                Name = c.Select(a => a.Name).First(),
+                Name = string.Join(" ", c.Select(a => testClass.FullName + "." + a.Name)),
+                Tests = c.Select(a => testClass.FullName + "." + a.Name).ToArray(),
                 GameClassOrder = gameClass.Order,
                 Instruction = string.Join("", c.Select(a => a.GameTask.Instruction)),
-                Filter = string.Join(" || ", c.Select(a => "test=" + testClass.FullName + "." + a.Name)),
+                Filter = string.Join("||", c.Select(a => "test==\"" + testClass.FullName + "." + a.Name+"\"")),
                 Reward = c.Sum(a => a.GameTask.Reward),
                 TimeLimit = c.Sum(a => a.GameTask.TimeLimit),
             }
         );
 
 
-    allTasks.AddRange(independTests);
+    allTasks.AddRange(independentTests);
     allTasks.AddRange(groupedTasks);
 }
 
-var serializerSettings = new JsonSerializerSettings();
-serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+var serializerSettings = new JsonSerializerSettings
+{
+    ContractResolver = new CamelCasePropertyNamesContractResolver()
+};
 var json = JsonConvert.SerializeObject(allTasks.ToArray(), serializerSettings);
 Console.WriteLine(json);
 File.WriteAllText(@"tasks.json", json);
+File.WriteAllText(@"..\..\..\..\AzureProjectTest\tasks.json", json);

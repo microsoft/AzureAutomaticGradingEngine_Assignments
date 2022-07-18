@@ -12,7 +12,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using ExecutionContext = Microsoft.Azure.WebJobs.ExecutionContext;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace GraderFunctionApp
 {
@@ -118,10 +121,22 @@ namespace GraderFunctionApp
 
             string workingDirectoryInfo = Environment.ExpandEnvironmentVariables(@"%HOME%\data\Functions\Tests");
             string exeLocation = Path.Combine(workingDirectoryInfo, "AzureProjectTest.exe");
-            log.LogInformation("exeLocation: " + exeLocation);
+            log.LogInformation("Unit Test Exe Location: " + exeLocation);
 
-            if(string.IsNullOrEmpty(filter))
+
+            if (string.IsNullOrEmpty(filter))
                 filter = "test==AzureProjectTest";
+            else
+            {
+                var serializerSettings = new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
+                using StreamReader r = new StreamReader(Path.Combine(workingDirectoryInfo, "tasks.json"));
+                var jsonText = await r.ReadToEndAsync();
+                var json = JsonConvert.DeserializeObject<List<GameTaskData>>(jsonText, serializerSettings);
+                filter = json.First(c => c.Name == filter).Filter;
+            }
 
             log.LogInformation($@"{tempCredentialsFilePath} {tempDir} {trace} {filter}");
             try

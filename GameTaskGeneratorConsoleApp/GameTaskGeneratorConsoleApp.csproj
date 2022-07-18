@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AzureProjectTest\AzureProjectTest.csproj" />
+    <ProjectReference Include="..\GraderFunctionApp\GraderFunctionApp.csproj" />
   </ItemGroup>
 
 </Project>

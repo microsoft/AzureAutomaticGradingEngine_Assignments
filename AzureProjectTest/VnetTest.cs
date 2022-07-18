@@ -5,10 +5,14 @@ using NUnit.Framework;
 
 namespace AzureProjectTest;
 
-[GameClass(1)]
+[GameClass(3)]
 [Parallelizable(ParallelScope.Children)]
 public class VnetTests
 {
+    [GameTask(
+        "Can you help create 2 vnet? First vnet named 'projVnet1Prod' in 'southeastasia' of CIDR '10.0.0.0/16' and " +
+        "Second vnet named 'projVnet2Prod' in 'southeastasia' of CIDR '10.1.0.0/16'.",
+        2, 10, 1)]
     [Test]
     public void Test01_Have2VnetsIn2Regions()
     {
@@ -19,6 +23,7 @@ public class VnetTests
         Assert.AreEqual("eastasia", scope.vnet2.Location);
     }
 
+    [GameTask(1)]
     [Test]
     public void Test02_VnetAddressSpace()
     {
@@ -40,7 +45,7 @@ public class VnetTests
     {
         using var scope = new TestScope();
         var publicSubnet = scope.GetVnet1PublicSubnet();
-        var privateSubnet = scope.vnet1.Subnets.FirstOrDefault(c => c.AddressPrefix == "10.0.0.0/24");
+        var privateSubnet = scope.GetVnet1PrivateSubnet();
         Assert.IsNotNull(publicSubnet);
         Assert.IsNotNull(privateSubnet);
     }
@@ -51,7 +56,7 @@ public class VnetTests
     {
         using var scope = new TestScope();
         var publicSubnet = scope.GetVnet2PublicSubnet();
-        var privateSubnet = scope.vnet2.Subnets.FirstOrDefault(c => c.AddressPrefix == "10.1.0.0/24");
+        var privateSubnet = scope.GetVnet2PrivateSubnet();
         Assert.IsNotNull(publicSubnet);
         Assert.IsNotNull(privateSubnet);
     }

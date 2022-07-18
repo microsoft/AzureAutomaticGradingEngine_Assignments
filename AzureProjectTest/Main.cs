@@ -10,7 +10,7 @@ internal class Run
         //var trace = "trace";
         //var tempDir = @"C:\Users\developer\Documents\test";
         //var tempCredentialsFilePath = @"C:\Users\developer\Documents\CloudLabTest.json";
-        //var where = "test==AzureProjectTest.ResourceGroupTest";
+        //var where = "test==\"AzureProjectTest.VnetTests.Test01_Have2VnetsIn2Regions\"||test==\"AzureProjectTest.VnetTests.Test02_VnetAddressSpace\"";
 
         var tempCredentialsFilePath = args[0];
         var tempDir = args[1];
@@ -32,7 +32,7 @@ internal class Run
             "--err=" + tempDir,
             "--params:AzureCredentialsPath=" + tempCredentialsFilePath + ";trace=" + trace
         };
-        if (!string.IsNullOrEmpty(where)) runTestParameters.Insert(1, "--where= \"" + where + "\"");
+        if (!string.IsNullOrEmpty(where)) runTestParameters.Insert(1, "--where=" + where );
         Console.WriteLine(runTestParameters.ToArray());
         var returnCode = autoRun.Execute(runTestParameters.ToArray(), new ExtendedTextWrapper(strWriter), Console.In);
 
