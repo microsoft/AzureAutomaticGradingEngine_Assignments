@@ -2,7 +2,6 @@ import { Construct } from "constructs";
 import { App, TerraformOutput, TerraformStack } from "cdktf";
 import { AzurermProvider, ResourceGroup } from "cdktf-azure-providers/.gen/providers/azurerm";
 import { Resource } from "cdktf-azure-providers/.gen/providers/null"
-
 import { AzureFunctionWindowsConstruct } from "azure-common-construct/patterns/AzureFunctionWindowsConstruct";
 import { AzureFunctionFileSharePublisherConstruct } from "azure-common-construct/patterns/AzureFunctionFileSharePublisherConstruct";
 import path = require("path");
@@ -43,7 +42,7 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
       vsProjectPath: path.join(__dirname, "..", "GraderFunctionApp/"),
       publishMode: PublishMode.AfterCodeChange
     })
-    azureFunctionConstruct.functionApp.siteConfig.cors.allowedOrigins=["*"];
+    azureFunctionConstruct.functionApp.siteConfig.cors.allowedOrigins = ["*"];
 
     const buildTestProjectResource = new Resource(this, "BuildFunctionAppResource",
       {
@@ -61,14 +60,13 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
     ]);
 
     const testOutputFolder = path.join(__dirname, "..", "/AzureProjectTest/bin/Release/net6.0/publish/win-x64/");
-    const azureFunctionFileSharePublisherConstruct= new AzureFunctionFileSharePublisherConstruct(this,"AzureFunctionFileSharePublisherConstruct",{
-      functionApp:azureFunctionConstruct.functionApp,
+    const azureFunctionFileSharePublisherConstruct = new AzureFunctionFileSharePublisherConstruct(this, "AzureFunctionFileSharePublisherConstruct", {
+      functionApp: azureFunctionConstruct.functionApp,
       functionFolder: "Tests",
       localFolder: testOutputFolder,
       storageAccount: azureFunctionConstruct.storageAccount
     });
     azureFunctionFileSharePublisherConstruct.node.addDependency(buildTestProjectResource)
-       
 
     new TerraformOutput(this, "FunctionAppHostname", {
       value: azureFunctionConstruct.functionApp.name
