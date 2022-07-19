@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "AzureProjectGrader": {
-      "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\developer\\Documents\\azureauth.json\" \"trace\""
-    }
-  }
-}
