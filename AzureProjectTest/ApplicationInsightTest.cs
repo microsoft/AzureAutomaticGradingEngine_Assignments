@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace AzureProjectTest;
 
+[GameClass(4)]
 [Parallelizable(ParallelScope.Children)]
 internal class ApplicationInsightTest
 {
@@ -32,12 +33,16 @@ internal class ApplicationInsightTest
         applicationInsight = GetApplicationInsights();
     }
 
+    [GameTask(
+    "Can you a ApplicationInsight in Hong Kong? Type is 'other', keeps log for 30 days, and tag name is 'key' with value 'ApplicationInsights'.",    
+    3, 10, 1)]
     [Test]
     public void Test01_AppServicePlanWithTag()
     {
         Assert.IsNotNull(applicationInsight, "Application Insights with tag {key:ApplicationInsights}.");
     }
 
+    [GameTask(1)]
     [Test]
     public void Test02_AppServicePlanSettings()
     {

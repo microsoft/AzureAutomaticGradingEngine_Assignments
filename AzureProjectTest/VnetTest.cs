@@ -238,7 +238,7 @@ public class VnetTests
     }
 
     [GameTask("Can you add 2 Network Security Rules to subnet 10.1.1.0/24? " +
-"First rule allows HTTP cross vent in bound from 10.1.0.0/24." +
+"First rule allows HTTP cross vent in bound from 10.1.0.0/24 with priority 201." +
 "Second rule allows all TCP outbound to anywhere with priority 100.", 5, 10)]
     [Test]
     public void Test14_Vnet1PrivateSubnetNetworkSecurityGroup()
@@ -272,14 +272,18 @@ public class VnetTests
                       privateSubnet2.AddressPrefix == crossVnetInbound.DestinationAddressPrefixes[0]);
     }
 
+    [GameTask("Can you add 2 Network Security Rules to subnet 10.1.0.0/24? " +
+"First rule allows HTTP cross vent in bound from 10.0.0.0/24 with priority 201." +
+"Second rule allows all TCP outbound to anywhere with priority 100.", 5, 10)]
     [Test]
     public void Test15_Vnet2PrivateSubnetNetworkSecurityGroup()
     {
         using var scope = new TestScope();
-        var privateSubnet = scope.GetVnet2PrivateSubnet();
-        privateSubnet = scope.client.Subnets.Get(Constants.ResourceGroupName, scope.vnet2.Name, privateSubnet.Name,
+        var privateSubnet2 = scope.GetVnet2PrivateSubnet();
+        var privateSubnet1 = scope.GetVnet1PrivateSubnet();
+        privateSubnet2 = scope.client.Subnets.Get(Constants.ResourceGroupName, scope.vnet2.Name, privateSubnet2.Name,
             "NetworkSecurityGroup");
-        var networkSecurityGroup = privateSubnet.NetworkSecurityGroup;
+        var networkSecurityGroup = privateSubnet2.NetworkSecurityGroup;
         Assert.IsNotNull(networkSecurityGroup);
 
         var allowAllTcpOutbound = networkSecurityGroup.SecurityRules.FirstOrDefault(c => c.DestinationPortRange == "*");
@@ -299,8 +303,8 @@ public class VnetTests
         Assert.AreEqual("TCP", crossVnetInbound.Protocol.ToUpper());
         Assert.AreEqual("80", crossVnetInbound.DestinationPortRange);
         Assert.AreEqual(201, crossVnetInbound.Priority);
-        Assert.IsTrue(privateSubnet.AddressPrefix == crossVnetInbound.DestinationAddressPrefix ||
-                      privateSubnet.AddressPrefix == crossVnetInbound.DestinationAddressPrefixes[0]);
+        Assert.IsTrue(privateSubnet1.AddressPrefix == crossVnetInbound.DestinationAddressPrefix ||
+                      privateSubnet1.AddressPrefix == crossVnetInbound.DestinationAddressPrefixes[0]);
     }
 
     private sealed class TestScope : IDisposable
