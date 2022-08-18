@@ -26,7 +26,7 @@ internal class ResourceGroupTest
         rg = subscription.GetResourceGroups().Get(Constants.ResourceGroupName).Value.Data;
     }
 
-    [GameTask("Can you help create a resource group named 'projProd' in Hong Kong?", 2, 10, 1)]
+    [GameTask("Can you create a resource group named 'projProd' in Hong Kong?", 2, 10, 1)]
     [Test]
     public async Task Test01_ResourceGroupExist()
     {

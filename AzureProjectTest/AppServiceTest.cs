@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 namespace AzureProjectTest;
 
+[GameClass(5)]
 internal class AppServiceTest
 {
     private static readonly HttpClient httpClient = new();
@@ -36,18 +37,25 @@ internal class AppServiceTest
         storageAccountTest.TearDown();
     }
 
+    [GameTask(
+        "Can you a Azure Function App v3 in Hong Kong for node.js 14? I want to use Windows in Consumption plan. " +
+        "Tag the AppServicePlan with {key:AppServicePlan}." +
+        "Tag the FunctionApps with {key:FunctionApp}.",
+    10, 20, 1)]
     [Test]
     public void Test01_AppServicePlanWithTag()
     {
         Assert.IsNotNull(appServicePlan, "AppService Plans with tag {key:AppServicePlan}.");
     }
 
+    [GameTask(1)]
     [Test]
     public void Test02_FunctionAppsWithTag()
     {
         Assert.IsNotNull(functionApp, "Function App Plans with tag {key:FunctionApp}.");
     }
 
+    [GameTask(1)]
     [Test]
     public void Test03_AppServicePlanSettings()
     {
@@ -57,6 +65,12 @@ internal class AppServiceTest
         Assert.AreEqual("Windows", appServicePlan.OperatingSystem.ToString());
     }
 
+    [GameTask(
+    "I want to set and confirm app settings:" +
+        "1. WEBSITE_RUN_FROM_PACKAGE to Storage account with tag name 'usage' and value 'logic' URL i.e. https://{storageAccount.Name}.blob.core.windows.net/code/app.zip." +
+        "2. StorageConnectionAppSetting to Storage account with tag name 'usage' and value 'logic' primary connect string." +
+        "3. WEBSITE_CONTENTAZUREFILECONNECTIONSTRING to Storage account with tag name 'usage' and value 'logic' primary connect string.",
+5, 20)]
     [Test]
     public void Test04_FunctionAppSettings()
     {
@@ -74,6 +88,10 @@ internal class AppServiceTest
             appSettings["WEBSITE_CONTENTAZUREFILECONNECTIONSTRING"].Value);
     }
 
+    [GameTask(
+"I want to set and confirm app settings:" +
+     "APPINSIGHTS_INSTRUMENTATIONKEY to the ApplicationInsights InstrumentationKey.",
+5, 10)]
     [Test]
     public void Test05_FunctionAppSettingsInstrumentationKey()
     {
@@ -83,6 +101,10 @@ internal class AppServiceTest
             appSettings["APPINSIGHTS_INSTRUMENTATIONKEY"].Value);
     }
 
+    [GameTask(
+"Create a node.js Azure function with binding: " +
+ "{\"disabled\":false,\"bindings\":[{\"type\":\"httpTrigger\",\"name\":\"req\",\"direction\":\"in\",\"dataType\":\"string\",\"authLevel\":\"anonymous\",\"methods\":[\"get\"]},{\"type\":\"http\",\"direction\":\"out\",\"name\":\"res\"},{\"type\":\"queue\",\"name\":\"jobQueue\",\"queueName\":\"job\",\"direction\":\"out\",\"connection\":\"StorageConnectionAppSetting\"},{\"tableName\":\"message\",\"name\":\"messageTable\",\"type\":\"table\",\"direction\":\"out\",\"connection\":\"StorageConnectionAppSetting\"}]}",
+5, 10)]
     [Test]
     public void Test04_AzureFunctionBinding()
     {
@@ -94,7 +116,10 @@ internal class AppServiceTest
         dynamic expected = JsonConvert.DeserializeObject(functionjs);
         Assert.AreEqual(expected, actural);
     }
-
+    [GameTask(
+        "Update a node.js Azure function source code " +
+        "When receive a get request ?user=tester&message=abcd, then return 'Hello, tester and I received your message: abcd'",
+10, 10)]
     [Test]
     public async Task Test05_AzureFunctionCallWithHttpResponse()
     {
@@ -106,6 +131,10 @@ internal class AppServiceTest
         Assert.AreEqual(expected, helloResponse);
     }
 
+    [GameTask(
+    "Update a node.js Azure function source code " +
+    "When receive a get request ?user=tester&message=abcd, then save pk 'tester', row key 'abcd' into Azure Storage table named 'message'.",
+10, 10)]
     [Test]
     public async Task Test06_AzureFunctionCallSaveDataToAzureTable()
     {
@@ -126,6 +155,10 @@ internal class AppServiceTest
         Assert.IsNotNull(result.Result);
     }
 
+    [GameTask(
+"Update a node.js Azure function source code " +
+"When receive a get request ?user=tester&message=abcd, then put message {'user':'tester','message': 'abcd','time':'<current time>'} into Azure Storage queue named 'job'.",
+10, 10)]
     [Test]
     public async Task Test07_AzureFunctionCallPutMessasgeToQueue()
     {

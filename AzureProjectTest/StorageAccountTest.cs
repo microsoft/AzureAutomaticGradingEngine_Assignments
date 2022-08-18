@@ -60,7 +60,7 @@ internal class StorageAccountTest
     }
 
     [GameTask(
-        "Can you help create a Storage account in resource group 'projProd' and add tag name 'usage' and value 'logic'?",
+        "Can you create a Storage account in resource group 'projProd' and add tag name 'usage' and value 'logic'?",
         2, 10)]
     [Test]
     public void Test01_StorageAccountsWithTag()
@@ -69,7 +69,7 @@ internal class StorageAccountTest
     }
 
     [GameTask(
-        "Can you help create a Storage account in resource group 'projProd' and add tag name 'usage' and value 'StaticWeb'?",
+        "Can you create a Storage account in resource group 'projProd' and add tag name 'usage' and value 'StaticWeb'?",
         2, 10)]
     [Test]
     public void Test02_StorageAccountsWithTag()
@@ -78,7 +78,7 @@ internal class StorageAccountTest
     }
 
     [GameTask(
-        "Can you help change your Storage account tagged 'usage' with 'logic' to southeastasia, AccessTier to Hot, StorageV2, Standard_LRS and allow public access?",
+        "Can you change your Storage account tagged 'usage' with 'logic' to southeastasia, AccessTier to Hot, StorageV2, Standard_LRS and allow public access?",
         2, 20)]
     [Test]
     public void Test03_StorageAccountSettings()
@@ -91,7 +91,7 @@ internal class StorageAccountTest
     }
 
     [GameTask(
-        "Can you help change your Storage account tagged 'usage' with 'StaticWeb' to eastasia, AccessTier to Hot, StorageV2, Standard_LRS and allow public access?" +
+        "Can you change your Storage account tagged 'usage' with 'StaticWeb' to eastasia, AccessTier to Hot, StorageV2, Standard_LRS and allow public access?" +
         "I need the index page of text 'This is index page.' and the error page of text 'This is error page.'.", 2, 30)]
     [Test]
     public async Task Test04_WebStorageAccountSettings()
