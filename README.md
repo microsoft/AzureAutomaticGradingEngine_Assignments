@@ -28,6 +28,8 @@ Project collaborators include, [Chan Yiu Leung](https://www.linkedin.com/in/hade
 
 The project is being validated through usage on the course [Higher Diploma in Cloud and Data Centre Administration](https://www.vtc.edu.hk/admission/en/programme/it114115-higher-diploma-in-cloud-and-data-centre-administration/)
 
+## Testing the Sample Classroom Setup 
+
 ## CDK-TF Deployment 
 You have to refer [Object Oriented Your Azure Infrastructure with Cloud Development Kit for Terraform (CDKTF)](https://techcommunity.microsoft.com/t5/educator-developer-blog/object-oriented-your-azure-infrastructure-with-cloud-development/ba-p/3474715) and setup your CDK-TF.
 
@@ -43,6 +45,7 @@ You can get the API management API Key from secrets.json
 ## Package UnitTest into exe
 Go to the \AzureProjectGrader\AzureProjectGrader path and run.
 dotnet publish -r win-x64 -c Release
+
 
 ## Contributing to Samples
 
