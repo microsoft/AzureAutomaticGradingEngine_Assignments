@@ -7,7 +7,7 @@ namespace AzureProjectTest;
 [Parallelizable(ParallelScope.Children)]
 internal class LogAnalyticsWorkspaceTest
 {
-    private MonitorManagementClient client;
+    private MonitorManagementClient? client;
 
     public LogAnalyticsWorkspaceTest()
     {

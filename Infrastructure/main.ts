@@ -69,30 +69,28 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
     });
     azureFunctionFileSharePublisherConstruct.node.addDependency(buildTestProjectResource)
 
-    if (process.env.PUBLISHER_EMAIL && process.env.PUBLISHER_NAME && process.env.API_EMAIL) {
-      const azureApiManagementConstruct = new AzureApiManagementConstruct(this, "AzureApiManagementConstruct", {
-        apiName: "GradingEngineAssignment",
-        environment,
-        prefix,
-        functionApp: azureFunctionConstruct.functionApp,
-        publisherEmail: process.env.PUBLISHER_EMAIL!,
-        publisherName: process.env.PUBLISHER_NAME!,
-        resourceGroup,
-        skuName: "Basic_1",
-        wpiUsers: [{ email: process.env.API_EMAIL!, firstName: "API", lastName: "API", id: "unique" }],
-        functionNames: ["AzureGraderApi", "AzureGraderFunction"],
-        ipRateLimit: 60,
-        corsDomain: "*"
-      })
+    const azureApiManagementConstruct = new AzureApiManagementConstruct(this, "AzureApiManagementConstruct", {
+      apiName: process.env.API_NAME!,
+      environment,
+      prefix,
+      functionApp: azureFunctionConstruct.functionApp,
+      publisherEmail: process.env.PUBLISHER_EMAIL!,
+      publisherName: process.env.PUBLISHER_NAME!,
+      resourceGroup,
+      skuName: "Basic_1",
+      wpiUsers: [{ email: process.env.API_EMAIL!, firstName: "API", lastName: "API", id: "unique" }],
+      functionNames: ["AzureGraderApi", "AzureGraderFunction"],
+      ipRateLimit: 60,
+      corsDomain: "*"
+    })
 
-      new TerraformOutput(this, "ApiManagementAzureGraderFunctionUrl", {
-        value: `${azureApiManagementConstruct.apiManagement.gatewayUrl}/AzureGraderFunction`
-      })
-      new TerraformOutput(this, "ApiKey", {
-        sensitive: true,
-        value: azureApiManagementConstruct.apiUsers[0].apiKey
-      })
-    }
+    new TerraformOutput(this, "ApiManagementAzureGraderFunctionUrl", {
+      value: `${azureApiManagementConstruct.apiManagement.gatewayUrl}/AzureGraderFunction`
+    })
+    new TerraformOutput(this, "ApiKey", {
+      sensitive: true,
+      value: azureApiManagementConstruct.apiUsers[0].apiKey
+    })
 
     new TerraformOutput(this, "FunctionAppHostname", {
       value: azureFunctionConstruct.functionApp.name
@@ -103,8 +101,6 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
     new TerraformOutput(this, "AzureGraderFunctionUrl", {
       value: `https://${azureFunctionConstruct.functionApp.name}.azurewebsites.net/api/AzureGraderFunction`
     })
-
-
   }
 }
 

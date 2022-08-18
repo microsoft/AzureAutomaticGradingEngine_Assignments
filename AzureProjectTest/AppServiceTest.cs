@@ -11,13 +11,16 @@ namespace AzureProjectTest;
 [GameClass(5)]
 internal class AppServiceTest
 {
-    private static readonly HttpClient httpClient = new();
-    private IAppServicePlan appServicePlan;
-    private IAppServiceManager client;
-    private IFunctionApp functionApp;
-    private StorageQueue jobQueue;
-    private Table messageTable;
-    private StorageAccount storageAccount;
+    private static readonly HttpClient HttpClient = new();
+    private IAppServicePlan? appServicePlan;
+    private IAppServiceManager? client;
+    private IFunctionApp? functionApp;
+    private StorageAccount? storageAccount;
+
+    public AppServiceTest()
+    {
+        Setup();
+    }
 
     [SetUp]
     public void Setup()
@@ -30,15 +33,13 @@ internal class AppServiceTest
             .FirstOrDefault(c => c.Tags.ContainsKey("key") && c.Tags["key"] == "FunctionApp");
 
         var storageAccountTest = new StorageAccountTest();
-        storageAccount = storageAccountTest.GetLogicStorageAccount(storageAccountTest.GetStorageAccounts());
-        messageTable = storageAccountTest.GetMessageTable();
-        jobQueue = storageAccountTest.GetJobQueue();
+        storageAccount = storageAccountTest.GetLogicStorageAccount(storageAccountTest!.GetStorageAccounts());
 
         storageAccountTest.TearDown();
     }
 
     [GameTask(
-        "Can you a Azure Function App v3 in Hong Kong for node.js 14? I want to use Windows in Consumption plan. " +
+        "Can you a Azure Function App v4 in Hong Kong for node.js 16? I want to use Windows in Consumption plan. " +
         "Tag the AppServicePlan with {key:AppServicePlan}." +
         "Tag the FunctionApps with {key:FunctionApp}.",
     10, 20, 1)]
@@ -59,7 +60,7 @@ internal class AppServiceTest
     [Test]
     public void Test03_AppServicePlanSettings()
     {
-        Assert.AreEqual("southeastasia", appServicePlan.Region.Name);
+        Assert.AreEqual("southeastasia", appServicePlan!.Region.Name);
         Assert.AreEqual("Dynamic", appServicePlan.PricingTier.SkuDescription.Tier);
         Assert.AreEqual("Y1", appServicePlan.PricingTier.SkuDescription.Size);
         Assert.AreEqual("Windows", appServicePlan.OperatingSystem.ToString());
@@ -74,12 +75,12 @@ internal class AppServiceTest
     [Test]
     public void Test04_FunctionAppSettings()
     {
-        Assert.AreEqual("southeastasia", functionApp.Region.Name);
+        Assert.AreEqual("southeastasia", functionApp!.Region.Name);
         IReadOnlyDictionary<string, IAppSetting> appSettings = functionApp.GetAppSettings();
-        Assert.AreEqual("~3", appSettings["FUNCTIONS_EXTENSION_VERSION"].Value);
+        Assert.AreEqual("~4", appSettings["FUNCTIONS_EXTENSION_VERSION"].Value);
         Assert.AreEqual("node", appSettings["FUNCTIONS_WORKER_RUNTIME"].Value);
-        Assert.AreEqual("~14", appSettings["WEBSITE_NODE_DEFAULT_VERSION"].Value);
-        StringAssert.StartsWith($"https://{storageAccount.Name}.blob.core.windows.net/code/",
+        Assert.AreEqual("~16", appSettings["WEBSITE_NODE_DEFAULT_VERSION"].Value);
+        StringAssert.StartsWith($"https://{storageAccount!.Name}.blob.core.windows.net/code/",
             appSettings["WEBSITE_RUN_FROM_PACKAGE"].Value);
         StringAssert.EndsWith("app.zip", appSettings["WEBSITE_RUN_FROM_PACKAGE"].Value);
         StringAssert.StartsWith($"DefaultEndpointsProtocol=https;AccountName={storageAccount.Name};AccountKey=",
@@ -96,8 +97,8 @@ internal class AppServiceTest
     public void Test05_FunctionAppSettingsInstrumentationKey()
     {
         var applicationInsightTest = new ApplicationInsightTest();
-        IReadOnlyDictionary<string, IAppSetting> appSettings = functionApp.GetAppSettings();
-        Assert.AreEqual(applicationInsightTest.GetApplicationInsights().InstrumentationKey,
+        IReadOnlyDictionary<string, IAppSetting> appSettings = functionApp!.GetAppSettings();
+        Assert.AreEqual(applicationInsightTest.GetApplicationInsights()!.InstrumentationKey,
             appSettings["APPINSIGHTS_INSTRUMENTATIONKEY"].Value);
     }
 
@@ -108,13 +109,12 @@ internal class AppServiceTest
     [Test]
     public void Test04_AzureFunctionBinding()
     {
-        var helloFunction = functionApp.ListFunctions()[0];
-        var functionjs =
-            "{\"disabled\":false,\"bindings\":[{\"type\":\"httpTrigger\",\"name\":\"req\",\"direction\":\"in\",\"dataType\":\"string\",\"authLevel\":\"anonymous\",\"methods\":[\"get\"]},{\"type\":\"http\",\"direction\":\"out\",\"name\":\"res\"},{\"type\":\"queue\",\"name\":\"jobQueue\",\"queueName\":\"job\",\"direction\":\"out\",\"connection\":\"StorageConnectionAppSetting\"},{\"tableName\":\"message\",\"name\":\"messageTable\",\"type\":\"table\",\"direction\":\"out\",\"connection\":\"StorageConnectionAppSetting\"}]}";
+        var helloFunction = functionApp!.ListFunctions()[0];
+        const string functionJs = "{\"disabled\":false,\"bindings\":[{\"type\":\"httpTrigger\",\"name\":\"req\",\"direction\":\"in\",\"dataType\":\"string\",\"authLevel\":\"anonymous\",\"methods\":[\"get\"]},{\"type\":\"http\",\"direction\":\"out\",\"name\":\"res\"},{\"type\":\"queue\",\"name\":\"jobQueue\",\"queueName\":\"job\",\"direction\":\"out\",\"connection\":\"StorageConnectionAppSetting\"},{\"tableName\":\"message\",\"name\":\"messageTable\",\"type\":\"table\",\"direction\":\"out\",\"connection\":\"StorageConnectionAppSetting\"}]}";
         var configJsonString = JsonConvert.SerializeObject(helloFunction.Config);
-        dynamic actural = JsonConvert.DeserializeObject(configJsonString);
-        dynamic expected = JsonConvert.DeserializeObject(functionjs);
-        Assert.AreEqual(expected, actural);
+        dynamic actual = JsonConvert.DeserializeObject(configJsonString);
+        dynamic expected = JsonConvert.DeserializeObject(functionJs);
+        Assert.AreEqual(expected, actual);
     }
     [GameTask(
         "Update a node.js Azure function source code " +
@@ -123,10 +123,10 @@ internal class AppServiceTest
     [Test]
     public async Task Test05_AzureFunctionCallWithHttpResponse()
     {
-        var helloFunction = functionApp.ListFunctions()[0];
+        var helloFunction = functionApp!.ListFunctions()[0];
         var message = DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss");
         var url = helloFunction.Inner.InvokeUrlTemplate + "?user=tester&message=" + message;
-        var helloResponse = await httpClient.GetStringAsync(url);
+        var helloResponse = await HttpClient.GetStringAsync(url);
         var expected = $@"Hello, tester and I received your message: {message}";
         Assert.AreEqual(expected, helloResponse);
     }
@@ -138,20 +138,20 @@ internal class AppServiceTest
     [Test]
     public async Task Test06_AzureFunctionCallSaveDataToAzureTable()
     {
-        var helloFunction = functionApp.ListFunctions()[0];
+        var helloFunction = functionApp!.ListFunctions()[0];
         var message = DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss");
         var url = helloFunction.Inner.InvokeUrlTemplate + "?user=tester&message=" + message;
-        await httpClient.GetStringAsync(url);
+        await HttpClient.GetStringAsync(url);
 
-        var appSettings = functionApp.GetAppSettings();
+        var appSettings = await functionApp!.GetAppSettingsAsync();
         var connectionString = appSettings["StorageConnectionAppSetting"].Value;
 
-        var storageAccount = CloudStorageAccount.Parse(connectionString);
-        var cloudTableClient = storageAccount.CreateCloudTableClient();
-        var messageTable = cloudTableClient.GetTableReference("message");
+        var cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
+        var cloudTableClient = cloudStorageAccount.CreateCloudTableClient();
+        var cloudTable = cloudTableClient.GetTableReference("message");
 
         //messageTable:[{ PartitionKey: user, RowKey: message, time: time}]
-        var result = await messageTable.ExecuteAsync(TableOperation.Retrieve("tester", message));
+        var result = await cloudTable.ExecuteAsync(TableOperation.Retrieve("tester", message));
         Assert.IsNotNull(result.Result);
     }
 
@@ -160,21 +160,21 @@ internal class AppServiceTest
 "When receive a get request ?user=tester&message=abcd, then put message {'user':'tester','message': 'abcd','time':'<current time>'} into Azure Storage queue named 'job'.",
 10, 10)]
     [Test]
-    public async Task Test07_AzureFunctionCallPutMessasgeToQueue()
+    public async Task Test07_AzureFunctionCallPutMessageToQueue()
     {
-        var helloFunction = functionApp.ListFunctions()[0];
+        var helloFunction = functionApp!.ListFunctions()[0];
 
-        var appSettings = functionApp.GetAppSettings();
+        var appSettings = await functionApp!.GetAppSettingsAsync();
         var connectionString = appSettings["StorageConnectionAppSetting"].Value;
 
-        var storageAccount = CloudStorageAccount.Parse(connectionString);
-        var cloudQueueClient = storageAccount.CreateCloudQueueClient();
+        var cloudStorageAccount = CloudStorageAccount.Parse(connectionString);
+        var cloudQueueClient = cloudStorageAccount.CreateCloudQueueClient();
         var queue = cloudQueueClient.GetQueueReference("job");
         await queue.ClearAsync();
 
         var message = DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss");
         var url = helloFunction.Inner.InvokeUrlTemplate + "?user=tester&message=" + message;
-        await httpClient.GetStringAsync(url);
+        await HttpClient.GetStringAsync(url);
 
         var messageAsync = queue.GetMessageAsync();
 

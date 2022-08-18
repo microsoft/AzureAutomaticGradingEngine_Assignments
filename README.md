@@ -38,6 +38,7 @@ Update .env.template and rename it to .env
 npm i
 cdktf deploy --auto-approve
 cdktf output --outputs-file-include-sensitive-outputs --outputs-file secrets.json
+npm run getstudentkey
 ```
 You can get the API management API Key from secrets.json
 

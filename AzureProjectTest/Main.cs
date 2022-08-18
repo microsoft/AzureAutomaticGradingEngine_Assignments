@@ -9,7 +9,8 @@ internal class Run
     {
         //var trace = "trace";
         //var tempDir = @"C:\Users\developer\Documents\test";
-        //var tempCredentialsFilePath = @"C:\Users\developer\Documents\CloudLabTest.json";
+        //var tempCredentialsFilePath = @"C:\Users\developer\Documents\AzureCloudLabEnvironment.json";
+        //var where = "";
         //var where = "test==\"AzureProjectTest.VnetTests.Test01_Have2VnetsIn2Regions\"||test==\"AzureProjectTest.VnetTests.Test02_VnetAddressSpace\"";
 
         var tempCredentialsFilePath = args[0];

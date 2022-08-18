@@ -1,4 +1,5 @@
-﻿using AzureProjectTest.Helper;
+﻿using Azure.Core;
+using AzureProjectTest.Helper;
 using Microsoft.Azure.Management.ApplicationInsights.Management;
 using Microsoft.Azure.Management.ApplicationInsights.Management.Models;
 using NUnit.Framework;
@@ -9,8 +10,8 @@ namespace AzureProjectTest;
 [Parallelizable(ParallelScope.Children)]
 internal class ApplicationInsightTest
 {
-    private ApplicationInsightsComponent applicationInsight;
-    private ApplicationInsightsManagementClient client;
+    private ApplicationInsightsComponent? applicationInsight;
+    private ApplicationInsightsManagementClient? client;
 
 
     public ApplicationInsightTest()
@@ -18,9 +19,9 @@ internal class ApplicationInsightTest
         Setup();
     }
 
-    public ApplicationInsightsComponent GetApplicationInsights()
+    public ApplicationInsightsComponent? GetApplicationInsights()
     {
-        return client.Components.List()
+        return client!.Components.List()
             .FirstOrDefault(c => c.Tags.ContainsKey("key") && c.Tags["key"] == "ApplicationInsights");
     }
 
@@ -46,7 +47,7 @@ internal class ApplicationInsightTest
     [Test]
     public void Test02_AppServicePlanSettings()
     {
-        Assert.AreEqual("southeastasia", applicationInsight.Location);
+        Assert.AreEqual(AzureLocation.EastAsia.ToString(), applicationInsight!.Location);
         Assert.AreEqual("other", applicationInsight.ApplicationType);
         Assert.AreEqual(30, applicationInsight.RetentionInDays);
     }

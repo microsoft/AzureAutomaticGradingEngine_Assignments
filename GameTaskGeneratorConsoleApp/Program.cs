@@ -24,7 +24,7 @@ foreach (var testClass in GetTypesWithHelpAttribute(assembly))
         {
             Name = testClass.FullName + "." + c.Name,
             Tests= new [] { testClass.FullName + "." + c.Name},
-            GameClassOrder = gameClass.Order,
+            GameClassOrder = gameClass!.Order,
             Instruction = c.GameTask.Instruction,
             Filter = "test=" + testClass.FullName + "." + c.Name,
             Reward = c.GameTask.Reward,
@@ -39,7 +39,7 @@ foreach (var testClass in GetTypesWithHelpAttribute(assembly))
             {
                 Name = string.Join(" ", c.Select(a => testClass.FullName + "." + a.Name)),
                 Tests = c.Select(a => testClass.FullName + "." + a.Name).ToArray(),
-                GameClassOrder = gameClass.Order,
+                GameClassOrder = gameClass!.Order,
                 Instruction = string.Join("", c.Select(a => a.GameTask.Instruction)),
                 Filter = string.Join("||", c.Select(a => "test==\"" + testClass.FullName + "." + a.Name+"\"")),
                 Reward = c.Sum(a => a.GameTask.Reward),

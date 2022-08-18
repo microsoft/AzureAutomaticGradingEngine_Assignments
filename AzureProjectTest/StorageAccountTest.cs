@@ -9,10 +9,10 @@ namespace AzureProjectTest;
 [GameClass(2)]
 internal class StorageAccountTest
 {
-    private static readonly HttpClient httpClient = new();
-    private StorageManagementClient client;
-    private StorageAccount storageAccount;
-    private StorageAccount webStorageAccount;
+    private static readonly HttpClient HttpClient = new();
+    private StorageManagementClient? client;
+    private StorageAccount? storageAccount;
+    private StorageAccount? webStorageAccount;
 
     public StorageAccountTest()
     {
@@ -30,33 +30,33 @@ internal class StorageAccountTest
         var storageAccounts = GetStorageAccounts();
         storageAccount = GetLogicStorageAccount(storageAccounts);
         webStorageAccount =
-            storageAccounts.FirstOrDefault(c => c.Tags.ContainsKey("usage") && c.Tags["usage"] == "StaticWeb");
+            storageAccounts!.FirstOrDefault(c => c.Tags.ContainsKey("usage") && c.Tags["usage"] == "StaticWeb");
     }
 
-    public StorageAccount GetLogicStorageAccount(IPage<StorageAccount> storageAccounts)
+    public StorageAccount? GetLogicStorageAccount(IPage<StorageAccount>? storageAccounts)
     {
-        return storageAccounts.FirstOrDefault(c => c.Tags.ContainsKey("usage") && c.Tags["usage"] == "logic");
+        return storageAccounts!.FirstOrDefault(c => c.Tags.ContainsKey("usage") && c.Tags["usage"] == "logic");
     }
 
-    public IPage<StorageAccount> GetStorageAccounts()
+    public IPage<StorageAccount>? GetStorageAccounts()
     {
-        return client.StorageAccounts.ListByResourceGroup(Constants.ResourceGroupName);
+        return client?.StorageAccounts.ListByResourceGroup(Constants.ResourceGroupName);
     }
 
-    public Table GetMessageTable()
+    public Table? GetMessageTable()
     {
-        return client.Table.Get(Constants.ResourceGroupName, storageAccount.Name, "message");
+        return client?.Table.Get(Constants.ResourceGroupName, storageAccount!.Name, "message");
     }
 
-    public StorageQueue GetJobQueue()
+    public StorageQueue? GetJobQueue()
     {
-        return client.Queue.Get(Constants.ResourceGroupName, storageAccount.Name, "job");
+        return client?.Queue.Get(Constants.ResourceGroupName, storageAccount!.Name, "job");
     }
 
     [TearDown]
     public void TearDown()
     {
-        client.Dispose();
+        client?.Dispose();
     }
 
     [GameTask(
@@ -83,11 +83,12 @@ internal class StorageAccountTest
     [Test]
     public void Test03_StorageAccountSettings()
     {
-        Assert.AreEqual("southeastasia", storageAccount.Location);
-        Assert.AreEqual("Hot", storageAccount.AccessTier.Value.ToString());
-        Assert.AreEqual("StorageV2", storageAccount.Kind);
-        Assert.AreEqual("Standard_LRS", storageAccount.Sku.Name);
-        Assert.IsTrue(storageAccount.AllowBlobPublicAccess);
+        Assert.IsNotNull(storageAccount, "StorageAccount Plans with tag {usage:logic}.");
+        Assert.AreEqual("southeastasia", storageAccount?.Location);
+        Assert.AreEqual("Hot", storageAccount?.AccessTier!.ToString());
+        Assert.AreEqual("StorageV2", storageAccount?.Kind);
+        Assert.AreEqual("Standard_LRS", storageAccount?.Sku.Name);
+        Assert.IsTrue(storageAccount?.AllowBlobPublicAccess);
     }
 
     [GameTask(
@@ -96,28 +97,29 @@ internal class StorageAccountTest
     [Test]
     public async Task Test04_WebStorageAccountSettings()
     {
-        Assert.AreEqual("eastasia", webStorageAccount.Location);
-        Assert.AreEqual("Hot", webStorageAccount.AccessTier.Value.ToString());
+        Assert.IsNotNull(webStorageAccount, "Static Web StorageAccount Plans with tag {usage:StaticWeb}.");
+        Assert.AreEqual("eastasia", webStorageAccount!.Location);
+        Assert.AreEqual("Hot", webStorageAccount!.AccessTier?.ToString());
         Assert.AreEqual("StorageV2", webStorageAccount.Kind);
         Assert.AreEqual("Standard_LRS", webStorageAccount.Sku.Name);
-        Assert.IsFalse(webStorageAccount.AllowBlobPublicAccess);
+        Assert.IsTrue(webStorageAccount.AllowBlobPublicAccess);
 
-        var webContainer = client.BlobContainers.Get(Constants.ResourceGroupName, webStorageAccount.Name, "$web");
+        var webContainer = await client!.BlobContainers.GetAsync(Constants.ResourceGroupName, webStorageAccount.Name, "$web");
         Assert.IsNotNull(webContainer);
 
         var webUrl = webStorageAccount.PrimaryEndpoints.Web;
-        var index = await httpClient.GetStringAsync(webUrl);
+        var index = await HttpClient.GetStringAsync(webUrl);
         Assert.AreEqual("This is index page.", index);
 
         var ex = Assert.ThrowsAsync<HttpRequestException>(async () =>
         {
-            var error = await httpClient.GetStringAsync(webUrl + "/PageIsNotExist" + DateTime.Now.Ticks);
+            var error = await HttpClient.GetStringAsync(webUrl + "/PageIsNotExist" + DateTime.Now.Ticks);
         });
 
         Assert.AreEqual("Response status code does not indicate success: 404 (The requested content does not exist.).",
-            ex.Message);
+            ex!.Message);
 
-        var response = await httpClient.GetAsync(webUrl + "/PageIsNotExist" + DateTime.Now.Ticks);
+        var response = await HttpClient.GetAsync(webUrl + "/PageIsNotExist" + DateTime.Now.Ticks);
         var error = await response.Content.ReadAsStringAsync();
         Assert.AreEqual("This is error page.", error);
     }
@@ -127,9 +129,9 @@ internal class StorageAccountTest
     [Test]
     public void Test05_StorageAccountCodeContainer()
     {
-        var codeContainer = client.BlobContainers.Get(Constants.ResourceGroupName, storageAccount.Name, "code");
+        var codeContainer = client!.BlobContainers.Get(Constants.ResourceGroupName, storageAccount!.Name, "code");
         Assert.IsNotNull(codeContainer);
-        Assert.AreEqual("Blob", codeContainer.PublicAccess.Value.ToString());
+        Assert.AreEqual("Blob", codeContainer!.PublicAccess!.Value.ToString());
     }
 
     [GameTask("I need a Azure table named 'message' in Storage account tagged 'usage' with 'logic'. Can you help?", 2,
