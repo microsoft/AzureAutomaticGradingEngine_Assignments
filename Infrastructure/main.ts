@@ -1,12 +1,12 @@
-import { Construct } from "constructs";
-import { App, TerraformOutput, TerraformStack } from "cdktf";
-import { AzurermProvider, ResourceGroup } from "cdktf-azure-providers/.gen/providers/azurerm";
-import { Resource } from "cdktf-azure-providers/.gen/providers/null"
-import { AzureFunctionWindowsConstruct } from "azure-common-construct/patterns/AzureFunctionWindowsConstruct";
 import { AzureApiManagementConstruct } from "azure-common-construct/patterns/AzureApiManagementConstruct";
 import { AzureFunctionFileSharePublisherConstruct } from "azure-common-construct/patterns/AzureFunctionFileSharePublisherConstruct";
-import path = require("path");
+import { AzureFunctionWindowsConstruct } from "azure-common-construct/patterns/AzureFunctionWindowsConstruct";
 import { PublishMode } from "azure-common-construct/patterns/PublisherConstruct";
+import { App, TerraformOutput, TerraformStack } from "cdktf";
+import { AzurermProvider, ResourceGroup } from "cdktf-azure-providers/.gen/providers/azurerm";
+import { Resource } from "cdktf-azure-providers/.gen/providers/null";
+import { Construct } from "constructs";
+import path = require("path");
 
 import * as dotenv from 'dotenv';
 dotenv.config({ path: __dirname + '/.env' });
