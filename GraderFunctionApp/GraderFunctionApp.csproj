@@ -4,12 +4,8 @@
 		<AzureFunctionsVersion>v4</AzureFunctionsVersion>
 	</PropertyGroup>
 	<ItemGroup>
-
-		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.OpenApi" Version="1.0.0" />
-
 		<PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1" />
-	
-	</ItemGroup>	
+	</ItemGroup>
 	<ItemGroup>
 		<None Update="host.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -18,6 +14,6 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
 		</None>
-	</ItemGroup>	
+	</ItemGroup>
 
 </Project>

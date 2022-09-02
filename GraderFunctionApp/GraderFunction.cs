@@ -13,11 +13,7 @@ using Microsoft.Extensions.Logging;
 using ExecutionContext = Microsoft.Azure.WebJobs.ExecutionContext;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Xml;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
-using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
-using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -31,26 +27,6 @@ namespace GraderFunctionApp
             public string Trace { get; set; }
             public string Credentials { get; set; }
             public string Filter { get; set; }
-        }
-
-        [OpenApiOperation(operationId: "RunAzureGrader")]
-        [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
-        [OpenApiRequestBody("application/json", typeof(RequestBodyModel),
-            Description = "JSON request body containing { Trace, Credentials,Filter}")]
-        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string),
-            Description = "The OK response message containing a JSON result.")]
-        [FunctionName(nameof(AzureGraderApi))]
-        public static async Task<IActionResult> AzureGraderApi(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
-            ILogger log, ExecutionContext context)
-        {
-            // Get request body data.
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var data = JsonConvert.DeserializeObject<RequestBodyModel>(requestBody);
-            var xml = await RunUnitTestProcess(context, log, data.Credentials, data.Trace ?? "Anonymous", data.Filter);
-
-            var result = ParseNUnitTestResult(xml);
-            return new JsonResult(result);
         }
 
 
