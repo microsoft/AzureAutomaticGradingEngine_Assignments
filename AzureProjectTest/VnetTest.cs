@@ -11,7 +11,7 @@ public class VnetTests
 {
     [GameTask(
         "Can you create 2 vnets? First vnet named 'projVnet1Prod' in 'southeastasia' of CIDR '10.0.0.0/16' and " +
-        "Second vnet named 'projVnet2Prod' in 'southeastasia' of CIDR '10.1.0.0/16'.",
+        "Second vnet named 'projVnet2Prod' in 'eastasia' of CIDR '10.1.0.0/16'.",
         2, 10, 1)]
     [Test]
     public void Test01_Have2VnetsIn2Regions()
