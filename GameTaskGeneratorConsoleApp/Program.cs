@@ -41,12 +41,11 @@ foreach (var testClass in GetTypesWithHelpAttribute(assembly))
                 Tests = c.Select(a => testClass.FullName + "." + a.Name).ToArray(),
                 GameClassOrder = gameClass!.Order,
                 Instruction = string.Join("", c.Select(a => a.GameTask.Instruction)),
-                Filter = string.Join("||", c.Select(a => "test==\"" + testClass.FullName + "." + a.Name+"\"")),
+                Filter = string.Join("||", c.Select(a => "test==\"" + testClass.FullName + "." + a.Name + "\"")),
                 Reward = c.Sum(a => a.GameTask.Reward),
                 TimeLimit = c.Sum(a => a.GameTask.TimeLimit),
             }
         );
-
 
     allTasks.AddRange(independentTests);
     allTasks.AddRange(groupedTasks);
@@ -56,7 +55,7 @@ var serializerSettings = new JsonSerializerSettings
 {
     ContractResolver = new CamelCasePropertyNamesContractResolver()
 };
-allTasks = allTasks.OrderBy(c => c.GameClassOrder).ToList();
+allTasks = allTasks.OrderBy(c => c.GameClassOrder).ThenBy(c => c.Tests.First()).ToList();
 var json = JsonConvert.SerializeObject(allTasks.ToArray(), serializerSettings);
 Console.WriteLine(json);
 File.WriteAllText(@"tasks.json", json);
