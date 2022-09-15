@@ -56,6 +56,7 @@ var serializerSettings = new JsonSerializerSettings
 {
     ContractResolver = new CamelCasePropertyNamesContractResolver()
 };
+allTasks = allTasks.ToList().OrderBy(c => c.GameClassOrder).ToList();
 var json = JsonConvert.SerializeObject(allTasks.ToArray(), serializerSettings);
 Console.WriteLine(json);
 File.WriteAllText(@"tasks.json", json);
