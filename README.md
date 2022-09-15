@@ -30,23 +30,22 @@ The project is being validated through usage on the course [Higher Diploma in Cl
 
 ## Testing the Sample Classroom Setup 
 
-## Azure Automated ARM Deployment
+## CDK-TF Deployment 
+You have to refer [Object Oriented Your Azure Infrastructure with Cloud Development Kit for Terraform (CDKTF)](https://techcommunity.microsoft.com/t5/educator-developer-blog/object-oriented-your-azure-infrastructure-with-cloud-development/ba-p/3474715) and setup your CDK-TF.
 
-[![Deploy To Azure](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fmicrosoft%2FAzureAutomaticGradingEngine_Assignments%2Fmain%2Fazuredeploy.json)
+Update .env.template and rename it to .env
+```
+npm i
+cdktf deploy --auto-approve
+cdktf output --outputs-file-include-sensitive-outputs --outputs-file secrets.json
+```
+You can get the API management API Key from secrets.json
 
 
 ## Package UnitTest into exe
 Go to the \AzureProjectGrader\AzureProjectGrader path and run.
 dotnet publish -r win-x64 -c Release
 
-## Generate the Prebuilt package
-
-Get the latest zip package
-AzureAutomaticGradingEngine\AzureAutomaticGradingEngineFunctionApp\obj\Release\netcoreapp3.1\PubTmp 
-
-## Contributing to the Grading Engine
-
-If you are interested in contributing the Engine please see the [Azure Automatic Grading Solution](http://github.com/microsoft/azureautomaticgradingengine
 
 ## Contributing to Samples
 
