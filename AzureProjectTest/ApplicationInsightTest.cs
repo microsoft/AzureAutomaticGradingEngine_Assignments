@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace AzureProjectTest;
 
 [GameClass(4)]
-[Parallelizable(ParallelScope.Children)]
+[Parallelizable(ParallelScope.Children), Timeout(Constants.TIMEOUT)]
 internal class ApplicationInsightTest
 {
     private ApplicationInsightsComponent? applicationInsight;

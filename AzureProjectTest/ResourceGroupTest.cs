@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace AzureProjectTest;
 
-[GameClass(1)]
+[GameClass(1), Timeout(Constants.TIMEOUT)]
 internal class ResourceGroupTest
 {
     private ArmClient? armClient;

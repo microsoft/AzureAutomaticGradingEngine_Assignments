@@ -8,10 +8,10 @@ using NUnit.Framework;
 
 namespace AzureProjectTest;
 
-[GameClass(5)]
+[GameClass(5), Timeout(Constants.TIMEOUT)]
 internal class AppServiceTest
 {
-    private static readonly HttpClient HttpClient = new();
+    private HttpClient HttpClient;
     private IAppServicePlan? appServicePlan;
     private IAppServiceManager? client;
     private IFunctionApp? functionApp;
@@ -25,6 +25,9 @@ internal class AppServiceTest
     [SetUp]
     public void Setup()
     {
+        HttpClient = new();
+        HttpClient.Timeout = TimeSpan.FromSeconds(5);
+
         var config = new Config();
         client = AppServiceManager.Configure().Authenticate(config.Credentials, config.SubscriptionId);
         appServicePlan = client.AppServicePlans.ListByResourceGroup(Constants.ResourceGroupName)

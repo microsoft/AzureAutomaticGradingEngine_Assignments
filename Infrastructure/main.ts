@@ -79,7 +79,7 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
       resourceGroup,
       skuName: "Basic_1",
       wpiUsers: [{ email: process.env.API_EMAIL!, firstName: "API", lastName: "API", id: "unique" }],
-      functionNames: ["AzureGraderApi", "AzureGraderFunction"],
+      functionNames: ["AzureGraderFunction"],
       ipRateLimit: 60,
       corsDomain: "*"
     })

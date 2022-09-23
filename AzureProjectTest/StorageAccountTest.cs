@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace AzureProjectTest;
 
-[GameClass(2)]
+[GameClass(2), Timeout(Constants.TIMEOUT)]
 internal class StorageAccountTest
 {
     private static readonly HttpClient HttpClient = new();
