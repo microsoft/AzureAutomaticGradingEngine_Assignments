@@ -26,7 +26,7 @@ internal class AppServiceTest
     public void Setup()
     {
         HttpClient = new();
-        HttpClient.Timeout = TimeSpan.FromSeconds(5);
+        HttpClient.Timeout = TimeSpan.FromSeconds(85);
 
         var config = new Config();
         client = AppServiceManager.Configure().Authenticate(config.Credentials, config.SubscriptionId);
