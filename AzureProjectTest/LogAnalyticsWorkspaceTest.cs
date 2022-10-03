@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace AzureProjectTest;
 
-[Parallelizable(ParallelScope.Children)]
+[Parallelizable(ParallelScope.Children), Timeout(Constants.TIMEOUT)]
 internal class LogAnalyticsWorkspaceTest
 {
     private MonitorManagementClient? client;

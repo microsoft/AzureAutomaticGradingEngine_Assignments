@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace AzureProjectTest;
 
-[GameClass(1)]
+[GameClass(1), Timeout(Constants.TIMEOUT)]
 internal class ResourceGroupTest
 {
     private ArmClient? armClient;
@@ -26,7 +26,7 @@ internal class ResourceGroupTest
         rg = (await subscription.GetResourceGroups()!.GetAsync(Constants.ResourceGroupName)).Value.Data;
     }
 
-    [GameTask("Can you create a resource group named 'projProd' in Singapore?", 2, 10, 1)]
+    [GameTask("Can you create a resource group named 'projProd' in Hong Kong?", 2, 10, 1)]
     [Test]
     public void Test01_ResourceGroupExist()
     {

@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace AzureProjectTest;
 
 [GameClass(3)]
-[Parallelizable(ParallelScope.Children)]
+[Parallelizable(ParallelScope.Children), Timeout(Constants.TIMEOUT)]
 public class VnetTests
 {
     [GameTask(
