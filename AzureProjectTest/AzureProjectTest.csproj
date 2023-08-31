@@ -7,16 +7,16 @@
 		<Nullable>enable</Nullable>		
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.6.0" />
-		<PackageReference Include="Azure.ResourceManager" Version="1.2.0" />
+		<PackageReference Include="Azure.Identity" Version="1.10.0" />
+		<PackageReference Include="Azure.ResourceManager" Version="1.7.0" />
 		<PackageReference Include="Microsoft.Azure.Management.ApplicationInsights" Version="0.3.0-preview" />
 		<PackageReference Include="Microsoft.Azure.Management.AppService.Fluent" Version="1.38.1" />
 		<PackageReference Include="Microsoft.Azure.Management.Fluent" Version="1.38.1" />
 		<PackageReference Include="Microsoft.Azure.Management.Monitor" Version="0.25.4-preview" />
-		<PackageReference Include="Microsoft.Azure.Management.Network" Version="22.0.0" />
-		<PackageReference Include="Microsoft.Azure.Management.Storage" Version="24.0.0" />
+		<PackageReference Include="Microsoft.Azure.Management.Network" Version="26.0.0" />
+		<PackageReference Include="Microsoft.Azure.Management.Storage" Version="25.0.0" />
 		<PackageReference Include="NUnit" Version="3.13.3" />
-		<PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+		<PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
 		<PackageReference Include="NUnitLite" Version="3.13.3" />
 	</ItemGroup>
 	<ItemGroup>

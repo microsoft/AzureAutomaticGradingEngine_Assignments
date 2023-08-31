@@ -1,10 +1,12 @@
-import { AzureApiManagementConstruct } from "azure-common-construct/patterns/AzureApiManagementConstruct";
+// import { AzureApiManagementConstruct } from "azure-common-construct/patterns/AzureApiManagementConstruct";
 import { AzureFunctionFileSharePublisherConstruct } from "azure-common-construct/patterns/AzureFunctionFileSharePublisherConstruct";
 import { AzureFunctionWindowsConstruct } from "azure-common-construct/patterns/AzureFunctionWindowsConstruct";
 import { PublishMode } from "azure-common-construct/patterns/PublisherConstruct";
 import { App, TerraformOutput, TerraformStack } from "cdktf";
-import { AzurermProvider, ResourceGroup } from "cdktf-azure-providers/.gen/providers/azurerm";
-import { Resource } from "cdktf-azure-providers/.gen/providers/null";
+import { AzurermProvider } from "cdktf-azure-providers/.gen/providers/azurerm/azurerm-provider";
+import { ResourceGroup } from "cdktf-azure-providers/.gen/providers/azurerm/resource-group";
+
+import { Resource } from "cdktf-azure-providers/.gen/providers/null/resource";
 import { Construct } from "constructs";
 import path = require("path");
 
@@ -69,28 +71,28 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
     });
     azureFunctionFileSharePublisherConstruct.node.addDependency(buildTestProjectResource)
 
-    const azureApiManagementConstruct = new AzureApiManagementConstruct(this, "AzureApiManagementConstruct", {
-      apiName: process.env.API_NAME!,
-      environment,
-      prefix,
-      functionApp: azureFunctionConstruct.functionApp,
-      publisherEmail: process.env.PUBLISHER_EMAIL!,
-      publisherName: process.env.PUBLISHER_NAME!,
-      resourceGroup,
-      skuName: "Basic_1",
-      wpiUsers: [{ email: process.env.API_EMAIL!, firstName: "API", lastName: "API", id: "unique" }],
-      functionNames: ["AzureGraderFunction"],
-      ipRateLimit: 60,
-      corsDomain: "*"
-    })
+    // const azureApiManagementConstruct = new AzureApiManagementConstruct(this, "AzureApiManagementConstruct", {
+    //   apiName: process.env.API_NAME!,
+    //   environment,
+    //   prefix,
+    //   functionApp: azureFunctionConstruct.functionApp,
+    //   publisherEmail: process.env.PUBLISHER_EMAIL!,
+    //   publisherName: process.env.PUBLISHER_NAME!,
+    //   resourceGroup,
+    //   skuName: "Basic_1",
+    //   wpiUsers: [{ email: process.env.API_EMAIL!, firstName: "API", lastName: "API", id: "unique" }],
+    //   functionNames: ["AzureGraderFunction"],
+    //   ipRateLimit: 60,
+    //   corsDomain: "*"
+    // })
 
-    new TerraformOutput(this, "ApiManagementAzureGraderFunctionUrl", {
-      value: `${azureApiManagementConstruct.apiManagement.gatewayUrl}/AzureGraderFunction`
-    })
-    new TerraformOutput(this, "ApiKey", {
-      sensitive: true,
-      value: azureApiManagementConstruct.apiUsers[0].apiKey
-    })
+    // new TerraformOutput(this, "ApiManagementAzureGraderFunctionUrl", {
+    //   value: `${azureApiManagementConstruct.apiManagement.gatewayUrl}/AzureGraderFunction`
+    // })
+    // new TerraformOutput(this, "ApiKey", {
+    //   sensitive: true,
+    //   value: azureApiManagementConstruct.apiUsers[0].apiKey
+    // })
 
     new TerraformOutput(this, "FunctionAppHostname", {
       value: azureFunctionConstruct.functionApp.name
