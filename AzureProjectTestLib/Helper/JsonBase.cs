@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace AzureProjectTest.Helper;
+namespace AzureProjectTestLib.Helper;
 
 [DataContract]
 public abstract class JsonBase<T> where T : class

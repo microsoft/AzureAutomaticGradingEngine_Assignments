@@ -1,12 +1,12 @@
-using AzureProjectTest.Helper;
+using AzureProjectTestLib.Helper;
 using Microsoft.Azure.Management.Network;
 using Microsoft.Azure.Management.Network.Models;
 using NUnit.Framework;
 
-namespace AzureProjectTest;
+namespace AzureProjectTestLib;
 
 [GameClass(3)]
-[Parallelizable(ParallelScope.Children), Timeout(Constants.TIMEOUT)]
+[Parallelizable(ParallelScope.Children), Timeout(Constants.Timeout)]
 public class VnetTests
 {
     [GameTask(

@@ -1,4 +1,6 @@
-﻿using NUnit.Common;
+﻿using System.Reflection;
+using AzureProjectTestLib.Helper;
+using NUnit.Common;
 using NUnitLite;
 
 namespace AzureProjectTest;
@@ -23,11 +25,11 @@ internal class Run
 
 
         var strWriter = new StringWriter();
-        var autoRun = new AutoRun();
+        var autoRun = new AutoRun(typeof(Config).GetTypeInfo().Assembly);
 
         var runTestParameters = new List<string>
         {
-            "/test:AzureProjectTest",
+            "/test:AzureProjectTestLib",
             "--work=" + tempDir,
             "--output=" + tempDir,
             "--err=" + tempDir,

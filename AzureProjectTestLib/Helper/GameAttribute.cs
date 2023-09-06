@@ -1,4 +1,4 @@
-﻿namespace AzureProjectTest.Helper;
+﻿namespace AzureProjectTestLib.Helper;
 
 [AttributeUsage(AttributeTargets.Method)]
 public class GameTaskAttribute : Attribute

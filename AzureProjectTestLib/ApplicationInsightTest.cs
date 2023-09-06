@@ -1,13 +1,13 @@
 ﻿using Azure.Core;
-using AzureProjectTest.Helper;
+using AzureProjectTestLib.Helper;
 using Microsoft.Azure.Management.ApplicationInsights.Management;
 using Microsoft.Azure.Management.ApplicationInsights.Management.Models;
 using NUnit.Framework;
 
-namespace AzureProjectTest;
+namespace AzureProjectTestLib;
 
 [GameClass(4)]
-[Parallelizable(ParallelScope.Children), Timeout(Constants.TIMEOUT)]
+[Parallelizable(ParallelScope.Children), Timeout(Constants.Timeout)]
 internal class ApplicationInsightTest
 {
     private ApplicationInsightsComponent? applicationInsight;

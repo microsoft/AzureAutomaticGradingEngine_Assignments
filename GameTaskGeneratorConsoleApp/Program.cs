@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using AzureProjectTest.Helper;
+
 using System.Reflection;
+using AzureProjectTestLib.Helper;
 using GraderFunctionApp;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;

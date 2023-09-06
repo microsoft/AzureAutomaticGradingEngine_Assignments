@@ -1,10 +1,10 @@
-﻿using AzureProjectTest.Helper;
+﻿using AzureProjectTestLib.Helper;
 using Microsoft.Azure.Management.Monitor;
 using NUnit.Framework;
 
-namespace AzureProjectTest;
+namespace AzureProjectTestLib;
 
-[Parallelizable(ParallelScope.Children), Timeout(Constants.TIMEOUT)]
+[Parallelizable(ParallelScope.Children), Timeout(Constants.Timeout)]
 internal class LogAnalyticsWorkspaceTest
 {
     private MonitorManagementClient? client;

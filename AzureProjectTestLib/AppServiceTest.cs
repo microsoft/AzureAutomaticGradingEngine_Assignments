@@ -1,4 +1,4 @@
-﻿using AzureProjectTest.Helper;
+﻿using AzureProjectTestLib.Helper;
 using Microsoft.Azure.Management.AppService.Fluent;
 using Microsoft.Azure.Management.Storage.Models;
 using Microsoft.WindowsAzure.Storage;
@@ -6,9 +6,9 @@ using Microsoft.WindowsAzure.Storage.Table;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
-namespace AzureProjectTest;
+namespace AzureProjectTestLib;
 
-[GameClass(5), Timeout(Constants.TIMEOUT)]
+[GameClass(5), Timeout(Constants.Timeout)]
 internal class AppServiceTest
 {
     private HttpClient HttpClient;

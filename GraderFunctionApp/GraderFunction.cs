@@ -134,7 +134,7 @@ namespace GraderFunctionApp
 
 
             if (string.IsNullOrEmpty(filter))
-                filter = "test==AzureProjectTest";
+                filter = "test==AzureProjectTestLib";
             else
             {
                 var serializerSettings = new JsonSerializerSettings

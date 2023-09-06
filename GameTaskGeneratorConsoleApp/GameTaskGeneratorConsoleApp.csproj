@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AzureProjectTest\AzureProjectTest.csproj" />
+    <ProjectReference Include="..\AzureProjectTestLib\AzureProjectTestLib.csproj" />
     <ProjectReference Include="..\GraderFunctionApp\GraderFunctionApp.csproj" />
   </ItemGroup>
 

@@ -1,12 +1,11 @@
-// import { AzureApiManagementConstruct } from "azure-common-construct/patterns/AzureApiManagementConstruct";
-import { AzureFunctionFileSharePublisherConstruct } from "azure-common-construct/patterns/AzureFunctionFileSharePublisherConstruct";
+// import { AzureFunctionFileSharePublisherConstruct } from "azure-common-construct/patterns/AzureFunctionFileSharePublisherConstruct";
 import { AzureFunctionWindowsConstruct } from "azure-common-construct/patterns/AzureFunctionWindowsConstruct";
 import { PublishMode } from "azure-common-construct/patterns/PublisherConstruct";
 import { App, TerraformOutput, TerraformStack } from "cdktf";
 import { AzurermProvider } from "cdktf-azure-providers/.gen/providers/azurerm/azurerm-provider";
 import { ResourceGroup } from "cdktf-azure-providers/.gen/providers/azurerm/resource-group";
 
-import { Resource } from "cdktf-azure-providers/.gen/providers/null/resource";
+// import { Resource } from "cdktf-azure-providers/.gen/providers/null/resource";
 import { Construct } from "constructs";
 import path = require("path");
 
@@ -25,84 +24,67 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
       }
     })
 
-    const prefix = "GradingEngineAssignment"
-    const environment = "dev"
+    const prefixes = ["GradingEngineAssignment1", "GradingEngineAssignment2"]
 
-    const resourceGroup = new ResourceGroup(this, "ResourceGroup", {
-      location: "EastAsia",
-      name: prefix + "ResourceGroup"
-    })
+    let skip = false;
+    for (let prefix of prefixes) {
+      const environment = "dev"
 
-    const appSettings = {
-    }
-
-    const azureFunctionConstruct = new AzureFunctionWindowsConstruct(this, "AzureFunctionConstruct", {
-      functionAppName: process.env.FUNCTION_APP_NAME!,
-      environment,
-      prefix,
-      resourceGroup,
-      appSettings,
-      vsProjectPath: path.join(__dirname, "..", "GraderFunctionApp/"),
-      publishMode: PublishMode.Always
-    })
-    azureFunctionConstruct.functionApp.siteConfig.cors.allowedOrigins = ["*"];
-
-    const buildTestProjectResource = new Resource(this, "BuildFunctionAppResource",
-      {
-        triggers: { build_hash: "${timestamp()}" },
-        dependsOn: [azureFunctionConstruct.functionApp]
+      const resourceGroup = new ResourceGroup(this, prefix + "ResourceGroup", {
+        location: "EastAsia",
+        name: prefix + "ResourceGroup"
       })
 
-    buildTestProjectResource.addOverride("provisioner", [
-      {
-        "local-exec": {
-          working_dir: path.join(__dirname, "..", "AzureProjectTest/"),
-          command: "dotnet publish -p:PublishProfile=FolderProfile"
-        },
-      },
-    ]);
+      const appSettings = {
+        AZURE_OPENAI_ENDPOINT: process.env.AZURE_OPENAI_ENDPOINT!,
+        AZURE_OPENAI_API_KEY: process.env.AZURE_OPENAI_API_KEY!,
+        DEPLOYMENT_OR_MODEL_NAME: process.env.DEPLOYMENT_OR_MODEL_NAME!
+      }
 
-    const testOutputFolder = path.join(__dirname, "..", "/AzureProjectTest/bin/Release/net6.0/publish/win-x64/");
-    const azureFunctionFileSharePublisherConstruct = new AzureFunctionFileSharePublisherConstruct(this, "AzureFunctionFileSharePublisherConstruct", {
-      functionApp: azureFunctionConstruct.functionApp,
-      functionFolder: "Tests",
-      localFolder: testOutputFolder,
-      storageAccount: azureFunctionConstruct.storageAccount
-    });
-    azureFunctionFileSharePublisherConstruct.node.addDependency(buildTestProjectResource)
+      const azureFunctionConstruct = new AzureFunctionWindowsConstruct(this, prefix + "AzureFunctionConstruct", {
+        functionAppName: process.env.FUNCTION_APP_NAME!,
+        environment,
+        prefix,
+        resourceGroup,
+        appSettings,
+        vsProjectPath: path.join(__dirname, "..", "GraderFunctionApp/"),
+        publishMode: PublishMode.Always
+      })
+      azureFunctionConstruct.functionApp.siteConfig.cors.allowedOrigins = ["*"];
 
-    // const azureApiManagementConstruct = new AzureApiManagementConstruct(this, "AzureApiManagementConstruct", {
-    //   apiName: process.env.API_NAME!,
-    //   environment,
-    //   prefix,
-    //   functionApp: azureFunctionConstruct.functionApp,
-    //   publisherEmail: process.env.PUBLISHER_EMAIL!,
-    //   publisherName: process.env.PUBLISHER_NAME!,
-    //   resourceGroup,
-    //   skuName: "Basic_1",
-    //   wpiUsers: [{ email: process.env.API_EMAIL!, firstName: "API", lastName: "API", id: "unique" }],
-    //   functionNames: ["AzureGraderFunction"],
-    //   ipRateLimit: 60,
-    //   corsDomain: "*"
-    // })
 
-    // new TerraformOutput(this, "ApiManagementAzureGraderFunctionUrl", {
-    //   value: `${azureApiManagementConstruct.apiManagement.gatewayUrl}/AzureGraderFunction`
-    // })
-    // new TerraformOutput(this, "ApiKey", {
-    //   sensitive: true,
-    //   value: azureApiManagementConstruct.apiUsers[0].apiKey
-    // })
+      if (skip) {
+        // const buildTestProjectResource = new Resource(this, prefix + "BuildFunctionAppResource",
+        //   {
+        //     triggers: { build_hash: "${timestamp()}" },
+        //     dependsOn: [azureFunctionConstruct.functionApp]
+        //   })
 
-    new TerraformOutput(this, "FunctionAppHostname", {
-      value: azureFunctionConstruct.functionApp.name
-    })
-    new TerraformOutput(this, "AzureFunctionBaseUrl", {
-      value: `https://${azureFunctionConstruct.functionApp.name}.azurewebsites.net`
-    })
-    new TerraformOutput(this, "AzureGraderFunctionUrl", {
-      value: `https://${azureFunctionConstruct.functionApp.name}.azurewebsites.net/api/AzureGraderFunction`
-    })
+        // buildTestProjectResource.addOverride("provisioner", [
+        //   {
+        //     "local-exec": {
+        //       working_dir: path.join(__dirname, "..", "AzureProjectTest/"),
+        //       command: "dotnet publish -p:PublishProfile=FolderProfile"
+        //     },
+        //   },
+        // ]);
+
+        //   const testOutputFolder = path.join(__dirname, "..", "/AzureProjectTest/bin/Release/net6.0/publish/win-x64/");
+        //   //const azureFunctionFileSharePublisherConstruct = 
+        //   new AzureFunctionFileSharePublisherConstruct(this, prefix + "AzureFunctionFileSharePublisherConstruct", {
+        //     functionApp: azureFunctionConstruct.functionApp,
+        //     functionFolder: "Tests",
+        //     localFolder: testOutputFolder,
+        //     storageAccount: azureFunctionConstruct.storageAccount
+        //   });
+        //   //azureFunctionFileSharePublisherConstruct.node.addDependency(buildTestProjectResource)
+        //   skip = !skip;
+      }
+
+      new TerraformOutput(this, prefix + "AzureGraderFunctionUrl", {
+        value: `https://${azureFunctionConstruct.functionApp.defaultHostname}/api/AzureGraderFunction`
+      })
+    }
   }
 }
 

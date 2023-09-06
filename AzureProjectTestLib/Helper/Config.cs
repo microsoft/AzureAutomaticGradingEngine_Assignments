@@ -3,9 +3,9 @@ using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Authentication;
 using NUnit.Framework;
 
-namespace AzureProjectTest.Helper;
+namespace AzureProjectTestLib.Helper;
 
-internal class Config
+public class Config
 {
     public Config()
     {

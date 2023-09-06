@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace AzureProjectTest.Helper;
+namespace AzureProjectTestLib.Helper;
 
 // ReSharper disable InconsistentNaming
 [DataContract]

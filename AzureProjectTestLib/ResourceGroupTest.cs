@@ -1,12 +1,12 @@
 ﻿using Azure.Core;
 using Azure.ResourceManager;
 using Azure.ResourceManager.Resources;
-using AzureProjectTest.Helper;
+using AzureProjectTestLib.Helper;
 using NUnit.Framework;
 
-namespace AzureProjectTest;
+namespace AzureProjectTestLib;
 
-[GameClass(1), Timeout(Constants.TIMEOUT)]
+[GameClass(1), Timeout(Constants.Timeout)]
 internal class ResourceGroupTest
 {
     private ArmClient? armClient;

@@ -1,12 +1,12 @@
-﻿using AzureProjectTest.Helper;
+﻿using AzureProjectTestLib.Helper;
 using Microsoft.Azure.Management.Storage;
 using Microsoft.Azure.Management.Storage.Models;
 using Microsoft.Rest.Azure;
 using NUnit.Framework;
 
-namespace AzureProjectTest;
+namespace AzureProjectTestLib;
 
-[GameClass(2), Timeout(Constants.TIMEOUT)]
+[GameClass(2), Timeout(Constants.Timeout)]
 internal class StorageAccountTest
 {
     private static readonly HttpClient HttpClient = new();
