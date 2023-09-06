@@ -141,8 +141,7 @@ namespace GraderFunctionApp
                 {
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
-                using StreamReader r = new StreamReader(Path.Combine(workingDirectoryInfo, "tasks.json"));
-                var jsonText = await r.ReadToEndAsync();
+                var jsonText = GameTaskFunction.GetTasksJson(false);
                 var json = JsonConvert.DeserializeObject<List<GameTaskData>>(jsonText, serializerSettings);
                 filter = json.First(c => c.Name == filter).Filter;
             }
