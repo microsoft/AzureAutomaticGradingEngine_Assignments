@@ -20,21 +20,29 @@ namespace GraderFunctionApp
 {
     public static class GameTaskFunction
     {
-        static readonly ObjectCache tokenCache = MemoryCache.Default;
+        private static readonly ObjectCache TokenCache = MemoryCache.Default;
         private static async Task<string> Rephrases(string sentence)
         {
             var rnd = new Random();
             var version = rnd.Next(1, 3);
             var cacheKey = sentence + version;
 
-            var tokenContents = tokenCache.GetCacheItem(cacheKey);
-            if (tokenContents != null) {
+            var tokenContents = TokenCache.GetCacheItem(cacheKey);
+            if (tokenContents != null)
+            {
                 return tokenContents.Value.ToString();
             }
-            
+
+            var azureOpenAiEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
+            var azureOpenAiApiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY");
+            var deploymentOrModelName = Environment.GetEnvironmentVariable("DEPLOYMENT_OR_MODEL_NAME");
+
+            if (azureOpenAiEndpoint == null || azureOpenAiApiKey == null || deploymentOrModelName == null)
+                return sentence;
+
             var openAiClient = new OpenAIClient(
-                new Uri(Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!),
-                new AzureKeyCredential(Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")!)
+                new Uri(azureOpenAiEndpoint),
+                new AzureKeyCredential(azureOpenAiApiKey)
             );
             var chatCompletionsOptions = new ChatCompletionsOptions
             {
@@ -60,17 +68,19 @@ namespace GraderFunctionApp
                 PresencePenalty = 0,
             };
             var chatCompletionsResponse = await openAiClient.GetChatCompletionsAsync(
-                Environment.GetEnvironmentVariable("DEPLOYMENT_OR_MODEL_NAME")!,
+                deploymentOrModelName,
                 chatCompletionsOptions
             );
 
             var chatMessage = chatCompletionsResponse.Value.Choices[0].Message;
-            var policy = new CacheItemPolicy();
-            policy.Priority = CacheItemPriority.Default;
-            // Setting expiration timing for the cache
-            policy.AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(15);
+            var policy = new CacheItemPolicy
+            {
+                Priority = CacheItemPriority.Default,
+                // Setting expiration timing for the cache
+                AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(15)
+            };
             tokenContents = new CacheItem(cacheKey, chatMessage.Content);
-            tokenCache.Set(tokenContents, policy);
+            TokenCache.Set(tokenContents, policy);
             return chatMessage.Content;
         }
 
@@ -104,7 +114,7 @@ namespace GraderFunctionApp
                             Filter = "test=" + testClass.FullName + "." + c.Name,
                             Reward = c.GameTask.Reward,
                             TimeLimit = c.GameTask.TimeLimit
-                        });
+                        }).ToList();
 
 
                     var groupedTasks = tasks.Where(c => c.GameTask.GroupNumber != -1)
@@ -121,7 +131,7 @@ namespace GraderFunctionApp
                                 Reward = c.Sum(a => a.GameTask.Reward),
                                 TimeLimit = c.Sum(a => a.GameTask.TimeLimit),
                             }
-                        );
+                        ).ToList();
 
                     allTasks.AddRange(independentTests);
                     allTasks.AddRange(groupedTasks);
