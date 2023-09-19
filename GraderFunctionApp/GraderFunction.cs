@@ -32,7 +32,7 @@ namespace GraderFunctionApp
 
         [FunctionName(nameof(AzureGraderFunction))]
         public static async Task<IActionResult> AzureGraderFunction(
-             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+             [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
              ILogger log, ExecutionContext context)
         {
             log.LogInformation("Start AzureGraderFunction");
@@ -72,29 +72,28 @@ namespace GraderFunctionApp
                         StatusCode = 200,
                     };
                 }
+
+                string credentials = req.Query["credentials"];
+                string filter = req.Query["filter"];
+
+                string xml;
+                if (req.Query.ContainsKey("trace"))
+                {
+                    string trace = req.Query["trace"];
+                    var email = ExtractEmail(trace);
+                    log.LogInformation("start:" + trace);
+                    xml = await RunUnitTestProcess(context, log, credentials, email, filter);
+                    log.LogInformation("end:" + trace);
+                }
                 else
                 {
-                    string credentials = req.Query["credentials"];
-                    string filter = req.Query["filter"];
-
-                    string xml;
-                    if (req.Query.ContainsKey("trace"))
-                    {
-                        string trace = req.Query["trace"];
-                        var email = ExtractEmail(trace);
-                        log.LogInformation("start:" + trace);
-                        xml = await RunUnitTestProcess(context, log, credentials, email, filter);
-                        log.LogInformation("end:" + trace);
-                    }
-                    else
-                    {
-                        xml = await RunUnitTestProcess(context, log, credentials, "Anonymous", filter);
-                    }
-                    return new ContentResult { Content = xml, ContentType = "application/xml", StatusCode = 200 };
+                    xml = await RunUnitTestProcess(context, log, credentials, "Anonymous", filter);
                 }
+                return new ContentResult { Content = xml, ContentType = "application/xml", StatusCode = 200 };
 
             }
-            else if (req.Method == "POST")
+
+            if (req.Method == "POST")
             {
                 log.LogInformation("POST Request");
                 string needXml = req.Query["xml"];

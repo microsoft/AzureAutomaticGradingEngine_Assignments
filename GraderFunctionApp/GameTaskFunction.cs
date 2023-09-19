@@ -86,7 +86,7 @@ namespace GraderFunctionApp
 
         [FunctionName("GameTaskFunction")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
             var json = GetTasksJson(true);

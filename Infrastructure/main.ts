@@ -25,7 +25,7 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
     })
 
 
-    const prefix = "GradingEngineAssignment1"
+    const prefix = "GradingEngineAssignment"
     const environment = "dev"
 
     const resourceGroup = new ResourceGroup(this, prefix + "ResourceGroup", {
