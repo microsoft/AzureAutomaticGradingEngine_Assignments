@@ -22,9 +22,9 @@ For course testing Microsoft Azure, it is hard to assess or grade Azure project 
 
 A rubic assessment is then completed on the task and students recieve grades based on the nunit outcomes and validation. 
 
-This project has been developed by [Cyrus Wong]( https://www.linkedin.com/in/cyruswong) [Microsoft Learn Educator Ambassador](https://docs.microsoft.com/learn/roles/educator/learn-for-educators-overview) in Association with the [Microsoft Next Generation Developer Relations Team](https://techcommunity.microsoft.com/t5/educator-developer-blog/bg-p/EducatorDeveloperBlog?WT.mc_id=academic-39457-leestott).
+This project has been developed by [Cyrus Wong]( https://www.linkedin.com/in/cyruswong) [Microsoft MVP Azure](https://mvp.microsoft.com/en-US/mvp/profile/86da86ff-8786-ed11-aad1-000d3a197333WT.mc_id=AZ-MVP-5005120) and [Microsoft Learn Educator Ambassador](https://docs.microsoft.com/learn/roles/educator/learn-for-educators-overview) in Association with the [Microsoft Next Generation Developer Relations Team](https://techcommunity.microsoft.com/t5/educator-developer-blog/bg-p/EducatorDeveloperBlog?WT.mc_id=academic-39457-leestott).
 
-Project collaborators include, [Chan Yiu Leung](https://www.linkedin.com/in/hadeschan/), [So Ka Chun](https://www.linkedin.com/in/so-ka-chun-0643971a5/), [Lo Chun Hei](https://www.linkedin.com/in/chunhei-lo-86a9301b5/), [Ling Po Chu](https://www.linkedin.com/in/po-chu-ling-88392b1b5/), [Cheung Ho Shing](https://www.linkedin.com/in/cheunghoshing/) and [Pearly Law](https://www.linkedin.com/in/mei-ching-pearly-jean-law-172707171/) from the IT114115 Higher Diploma in Cloud and Data Centre Administration.
+Project collaborators include, [Kwok,Hau Ling](https://www.linkedin.com/in/hau-ling-kwok-657b9624a/), [Lau Hing Pui](https://www.linkedin.com/in/leolaulhp/), and [Xu Yuan](https://www.linkedin.com/in/xu-yuan-flora/) from the IT114115 Higher Diploma in Cloud and Data Centre Administration.
 
 The project is being validated through usage on the course [Higher Diploma in Cloud and Data Centre Administration](https://www.vtc.edu.hk/admission/en/programme/it114115-higher-diploma-in-cloud-and-data-centre-administration/)
 
@@ -35,16 +35,24 @@ You have to refer [Object Oriented Your Azure Infrastructure with Cloud Developm
 
 Update .env.template and rename it to .env
 ```
+FUNCTION_APP_NAME=
+AZURE_OPENAI_ENDPOINT=https://eastus.api.cognitive.microsoft.com/
+AZURE_OPENAI_API_KEY=
+DEPLOYMENT_OR_MODEL_NAME=gpt-35-turbo
+```
+
+```
 npm i
 cdktf deploy --auto-approve
-cdktf output --outputs-file-include-sensitive-outputs --outputs-file secrets.json
 ```
-You can get the API management API Key from secrets.json
-
 
 ## Package UnitTest into exe
 Go to the \AzureProjectGrader\AzureProjectGrader path and run.
+```
 dotnet publish -r win-x64 -c Release
+```
+Use Microsoft Azure Storage Explorer 
+Upload all files in ```\AzureProjectTest\bin\Release\net6.0\win-x64``` to the storage account file share ```data/Functions/Tests```.
 
 
 ## Contributing to Samples
