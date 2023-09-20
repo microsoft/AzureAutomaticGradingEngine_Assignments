@@ -46,7 +46,8 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
       resourceGroup,
       appSettings,
       vsProjectPath: path.join(__dirname, "..", "GraderFunctionApp/"),
-      publishMode: PublishMode.Always
+      publishMode: PublishMode.Always,
+      functionNames: ["GraderFunction", "GameTaskFunction"]
     })
     azureFunctionConstruct.functionApp.siteConfig.cors.allowedOrigins = ["*"];
 
@@ -70,12 +71,15 @@ class AzureAutomaticGradingEngineGraderStack extends TerraformStack {
       functionApp: azureFunctionConstruct.functionApp,
       functionFolder: "Tests",
       localFolder: testOutputFolder,
-      storageAccount: azureFunctionConstruct.storageAccount
+      storageAccount: azureFunctionConstruct.storageAccount,
     });
     azureFunctionFileSharePublisherConstruct.node.addDependency(buildTestProjectResource)
 
-    new TerraformOutput(this, prefix + "AzureGraderFunctionUrl", {
-      value: `https://${azureFunctionConstruct.functionApp.defaultHostname}/api/AzureGraderFunction`
+    new TerraformOutput(this, prefix + "GraderFunctionUrl", {
+      value: azureFunctionConstruct.functionUrls!["GraderFunction"]
+    });
+    new TerraformOutput(this, prefix + "GameTaskFunctionUrl", {
+      value: azureFunctionConstruct.functionUrls!["GameTaskFunction"]
     });
   }
 }

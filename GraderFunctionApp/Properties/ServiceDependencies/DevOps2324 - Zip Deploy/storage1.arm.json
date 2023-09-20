@@ -4,7 +4,7 @@
   "parameters": {
     "resourceGroupName": {
       "type": "string",
-      "defaultValue": "GradingEngineAssignment1ResourceGroup",
+      "defaultValue": "GradingEngineAssignmentResourceGroup",
       "metadata": {
         "_parameterType": "resourceGroup",
         "description": "Name of the resource group for the resource. It is recommended to put resources under same resource group for better tracking."
@@ -36,7 +36,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('GradingEngineAssignment1ApplicationInsights', subscription().subscriptionId)))]",
+      "name": "[concat(parameters('resourceGroupName'), 'Deployment', uniqueString(concat('0aq9r', subscription().subscriptionId)))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "apiVersion": "2019-10-01",
       "dependsOn": [
@@ -49,12 +49,15 @@
           "contentVersion": "1.0.0.0",
           "resources": [
             {
-              "name": "GradingEngineAssignment1ApplicationInsights",
-              "type": "microsoft.insights/components",
+              "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+              },
+              "kind": "StorageV2",
+              "name": "0aq9r",
+              "type": "Microsoft.Storage/storageAccounts",
               "location": "[parameters('resourceLocation')]",
-              "kind": "other",
-              "properties": {},
-              "apiVersion": "2015-05-01"
+              "apiVersion": "2017-10-01"
             }
           ]
         }
@@ -62,6 +65,6 @@
     }
   ],
   "metadata": {
-    "_dependencyType": "appInsights.azure"
+    "_dependencyType": "storage.azure"
   }
 }

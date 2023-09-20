@@ -55,7 +55,7 @@ namespace GraderFunctionApp
         <textarea name='credentials' required  rows='15' cols='100'></textarea>
         <br/>
         NUnit Test filter<br/>
-        <input type='text' id='filter' name='filter' /><br/>
+        <input type='text' id='filter' name='filter' size='50'/><br/>
         <button type='submit'>Run Test</button>
     </form>
     <footer>
