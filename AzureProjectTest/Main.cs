@@ -13,7 +13,7 @@ internal class Run
         //var tempDir = @"C:\Users\developer\Documents\test";
         //var tempCredentialsFilePath = @"C:\Users\developer\Documents\debug.json";
         //var where = "";
-        //var where = "test==\"AzureProjectTest.VnetTests.Test01_Have2VnetsIn2Regions\"||test==\"AzureProjectTest.VnetTests.Test02_VnetAddressSpace\"";
+        //var where = "test==\"AzureProjectTestLib.VnetTests.Test01_Have2VnetsIn2Regions\"||test==\"AzureProjectTestLib.VnetTests.Test02_VnetAddressSpace\"";
 
         var tempCredentialsFilePath = args[0];
         var tempDir = args[1];
