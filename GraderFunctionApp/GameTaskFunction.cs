@@ -49,7 +49,7 @@ namespace GraderFunctionApp
                 Messages =
                 {
                     new ChatMessage(ChatRole.System, "You are a Microsoft Azure game dialogue designer,Good at designing lively and interesting dialogue." +
-                                                     "You only reply instruction to ask the player setup something in Microsoft Azure."),
+                                                     "You only reply to instruction to ask the player setup something in Microsoft Azure."),
                     new ChatMessage(ChatRole.User,
                         $"You need to help me rewrite a sentence with the following rule:" +
                         $"1. Keep all technical teams and Noun. " +
@@ -57,7 +57,7 @@ namespace GraderFunctionApp
                         $"3. In a funny style to the brave (勇者) with some emojis" +
                         $"4. In both English and Traditional Chinese." +
                         $"5. English goes first, and Chinese goes next." +
-                        $"6. Only reply the rewritten sentence, and don't answer anything else." +
+                        $"6. Only reply to the rewritten sentence, and don't answer anything else." +
                         $"Rewrite the following sentence:\n\n\n{sentence}\n"
                         ),
                 },
