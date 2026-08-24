@@ -157,12 +157,15 @@ namespace GraderFunctionApp
                 {
                     WorkingDirectory = workingDirectoryInfo,
                     FileName = exeLocation,
-                    Arguments = $@"{tempCredentialsFilePath} {tempDir} {trace} {filter}",
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                 };
+                info.ArgumentList.Add(tempCredentialsFilePath);
+                info.ArgumentList.Add(tempDir);
+                info.ArgumentList.Add(trace);
+                info.ArgumentList.Add(filter);
 
                 process.StartInfo = info;
 
