@@ -147,7 +147,9 @@ namespace GraderFunctionApp
                 filter = json.First(c => c.Name == filter).Filter;
             }
 
-            log.LogInformation($@"{tempCredentialsFilePath} {tempDir} {filter}");
+            var sanitizedTrace = trace?.Replace("\r", "").Replace("\n", "");
+            var sanitizedFilter = filter?.Replace("\r", "").Replace("\n", "");
+            log.LogInformation("Starting unit test process.");
             try
             {
                 using var process = new Process();
