@@ -147,7 +147,7 @@ namespace GraderFunctionApp
                 filter = json.First(c => c.Name == filter).Filter;
             }
 
-            log.LogInformation($@"{tempCredentialsFilePath} {tempDir} {trace} {filter}");
+            log.LogInformation($@"{tempCredentialsFilePath} {tempDir} {filter}");
             try
             {
                 using var process = new Process();
