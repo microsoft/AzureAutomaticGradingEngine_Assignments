@@ -10,7 +10,7 @@ Students are asked to create the following Azure Infrastructure
 2. Create 2 Subnets in each Virtual Network.
 3. Create Route Tables & Network Security Groups.
 4. Create Virtual Network Peering for 2 Virtual Networks.
-5. Create 2 Storage Accounts - one for an Azure Function and another for a Azure Static Website.
+5. Create 2 Storage Accounts - one for an Azure Function and another for an Azure Static Website.
     1. Azure Function Storage Account contains 1 Storage Container, 1 Storage Queue, and 1 StorageTable.
     2. Static website Storage Account contains index page *index.html* and error page *error.html*.
 6. Create 1 Application Insights with Log Analytics Workspace.
