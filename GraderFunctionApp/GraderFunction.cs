@@ -149,7 +149,7 @@ namespace GraderFunctionApp
 
             var sanitizedTrace = trace?.Replace("\r", "").Replace("\n", "");
             var sanitizedFilter = filter?.Replace("\r", "").Replace("\n", "");
-            log.LogInformation($@"{tempCredentialsFilePath} {tempDir} {sanitizedTrace} {sanitizedFilter}");
+            log.LogInformation("Starting unit test process.");
             try
             {
                 using var process = new Process();
