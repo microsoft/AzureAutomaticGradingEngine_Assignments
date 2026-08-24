@@ -147,7 +147,9 @@ namespace GraderFunctionApp
                 filter = json.First(c => c.Name == filter).Filter;
             }
 
-            log.LogInformation($@"{tempCredentialsFilePath} {tempDir} {trace} {filter}");
+            var sanitizedTrace = trace?.Replace("\r", "").Replace("\n", "");
+            var sanitizedFilter = filter?.Replace("\r", "").Replace("\n", "");
+            log.LogInformation($@"{tempCredentialsFilePath} {tempDir} {sanitizedTrace} {sanitizedFilter}");
             try
             {
                 using var process = new Process();
