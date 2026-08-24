@@ -82,9 +82,10 @@ namespace GraderFunctionApp
                     {
                         string trace = req.Query["trace"];
                         var email = ExtractEmail(trace);
-                        log.LogInformation("start:" + trace);
+                        string sanitizedTrace = trace?.Replace("\r", "").Replace("\n", "");
+                        log.LogInformation("start:" + sanitizedTrace);
                         xml = await RunUnitTestProcess(context, log, credentials, email, filter);
-                        log.LogInformation("end:" + trace);
+                        log.LogInformation("end:" + sanitizedTrace);
                     }
                     else
                     {
